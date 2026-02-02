@@ -1473,32 +1473,38 @@ class _RightRow extends StatelessWidget {
     }
 
     final style = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          fontSize: 11.5,
           letterSpacing: 0.1,
-          color: scheme.onSurface.withOpacity(0.8),
+          color: scheme.onSurface.withOpacity(0.88),
+          height: 1.05,
         );
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // ✅ Meter/tune column (give it enough room + scale down if needed)
         SizedBox(
-          width:25,
+          width: 40, // was 25 (too small)
           child: Align(
             alignment: Alignment.centerRight,
-            child: Text(clean(left), style: style),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(clean(left), style: style),
+            ),
           ),
         ),
-        const SizedBox(width: 15),
+        const SizedBox(width: 12),
+
+        // ✅ Author/by column (scale down instead of ellipsis)
         SizedBox(
-          width: 60,
+          width: 88, // was 60 (too small for names)
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              clean(right),
-              style: style,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(clean(right), style: style),
             ),
           ),
         ),
@@ -1507,10 +1513,11 @@ class _RightRow extends StatelessWidget {
   }
 }
 
+
 /// ✅ Icons row in the middle (Favorites, Copy, Share)
 class _HeaderActions extends StatelessWidget {
   final Song song;
-  const _HeaderActions({required this.song});
+  const _HeaderActions({super.key, required this.song});
 
   @override
   Widget build(BuildContext context) {
@@ -1527,7 +1534,7 @@ class _HeaderActions extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
             child: IconTheme(
-              data: IconThemeData(color: greener, size: 15), // ✅ greener icons
+              data: IconThemeData(color: greener, size: 15), // ✅ keep size
               child: child,
             ),
           ),
@@ -1541,56 +1548,53 @@ class _HeaderActions extends StatelessWidget {
       return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-       AnimatedBuilder(
-  animation: favorites,
-  builder: (_, __) {
-    final isFav = favorites.isFav(song.number);
+    return Padding(
+      padding: const EdgeInsets.only(top: 35), // ✅ lowers the icons row
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedBuilder(
+            animation: favorites,
+            builder: (_, __) {
+              final isFav = favorites.isFav(song.number);
 
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 1.0, end: isFav ? 1.12 : 1.0),
-      duration: const Duration(milliseconds: 260),
-      curve: Curves.easeOut,
-      builder: (context, scale, child) {
-        return Transform.scale(
-          scale: scale,
-          child: child,
-        );
-      },
-      child: pill(
-        onTap: () => favorites.toggle(song.number),
-        child: Icon(
-          isFav ? Icons.favorite : Icons.favorite_border,
-        ),
-      ),
-    );
-  },
-),
-
-
-const SizedBox(width: 10),
-        pill(
-          onTap: () async {
-            await Clipboard.setData(ClipboardData(text: shareText(song)));
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Copied!')),
+              return TweenAnimationBuilder<double>(
+                tween: Tween(begin: 1.0, end: isFav ? 1.12 : 1.0),
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOut,
+                builder: (context, scale, child) {
+                  return Transform.scale(scale: scale, child: child);
+                },
+                child: pill(
+                  onTap: () => favorites.toggle(song.number),
+                  child: Icon(isFav ? Icons.favorite : Icons.favorite_border),
+                ),
               );
-            }
-          },
-          child: const Icon(Icons.copy),
-        ),
-        const SizedBox(width: 10),
-        pill(
-          onTap: () => Share.share(shareText(song)),
-          child: const Icon(Icons.share),
-        ),
-      ],
+            },
+          ),
+          const SizedBox(width: 10),
+          pill(
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: shareText(song)));
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Copied!')),
+                );
+              }
+            },
+            child: const Icon(Icons.copy),
+          ),
+          const SizedBox(width: 10),
+          pill(
+            onTap: () => Share.share(shareText(song)),
+            child: const Icon(Icons.share),
+          ),
+        ],
+      ),
     );
   }
 }
+
 
 /// ----------------------
 /// ✅ PinnedHeaderDelegate
