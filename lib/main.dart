@@ -1476,7 +1476,7 @@ class _RightRow extends StatelessWidget {
           fontWeight: FontWeight.w700,
           fontSize: 11.5,
           letterSpacing: 0.1,
-          color: scheme.onSurface.withOpacity(0.88),
+          color: scheme.onSurface.withOpacity(0.70),
           height: 1.05,
         );
 
@@ -1485,7 +1485,7 @@ class _RightRow extends StatelessWidget {
       children: [
         // ✅ Meter/tune column (give it enough room + scale down if needed)
         SizedBox(
-          width: 40, // was 25 (too small)
+          width: 30, // was 25 (too small)
           child: Align(
             alignment: Alignment.centerRight,
             child: FittedBox(
@@ -1498,7 +1498,7 @@ class _RightRow extends StatelessWidget {
 
         // ✅ Author/by column (scale down instead of ellipsis)
         SizedBox(
-          width: 88, // was 60 (too small for names)
+          width: 70, // was 60 (too small for names)
           child: Align(
             alignment: Alignment.centerLeft,
             child: FittedBox(
