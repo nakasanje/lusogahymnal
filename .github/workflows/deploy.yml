@@ -20,7 +20,7 @@ jobs:
           channel: stable
 
       - run: flutter pub get
-      - run: flutter build web --release --base-href "/lusoga-hymnal/"
+      - run: flutter build web --release --base-href "/lusogahymnal/"
 
       - uses: actions/upload-pages-artifact@v3
         with:
