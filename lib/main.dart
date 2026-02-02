@@ -1364,7 +1364,7 @@ class SongDetails extends StatelessWidget {
 
                         // ◀ PREVIOUS (bottom-left)
                         Positioned(
-                          left: 70,
+                          left: 40,
                           bottom: 0,
                           top:35,
                           child: IconButton(
@@ -1376,7 +1376,7 @@ class SongDetails extends StatelessWidget {
 
                         // ▶ NEXT (bottom-right)
                         Positioned(
-                          right: 70,
+                          right: 40,
                           bottom: 0,
                           top:35,
                           child: IconButton(
