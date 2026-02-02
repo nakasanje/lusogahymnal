@@ -824,23 +824,18 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
       const buttonH = 52.0;
       const bottomGap = 14.0;
 
-      // 4 rows: (1 2 3), (4 5 6), (7 8 9), (0 + backspace)
       const rows = 4;
       const cols = 3;
 
       final tileW = (c.maxWidth - spacing * (cols - 1)) / cols;
 
-      // Height available for the keypad tiles (excluding the Open button + gaps)
       final availableForGrid = c.maxHeight - buttonH - bottomGap;
 
-      // Height-based tile size so it ALWAYS fits vertically
       final tileHByHeight =
           (availableForGrid - spacing * (rows - 1)) / rows;
 
-      // Width-based tile size (looks nice on large screens)
       final tileHByWidth = tileW * 0.72;
 
-      // Pick the smaller so it never overflows
       final tileH = tileHByHeight < tileHByWidth ? tileHByHeight : tileHByWidth;
 
       Widget key(String label, {VoidCallback? onTap, IconData? icon}) {
@@ -865,27 +860,30 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
 
       return Column(
         children: [
-          // If screen is extremely short, allow scroll just in case
           Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Wrap(
-                spacing: spacing,
-                runSpacing: spacing,
-                children: [
-                  key('1', onTap: () => _tapDigit('1')),
-                  key('2', onTap: () => _tapDigit('2')),
-                  key('3', onTap: () => _tapDigit('3')),
-                  key('4', onTap: () => _tapDigit('4')),
-                  key('5', onTap: () => _tapDigit('5')),
-                  key('6', onTap: () => _tapDigit('6')),
-                  key('7', onTap: () => _tapDigit('7')),
-                  key('8', onTap: () => _tapDigit('8')),
-                  key('9', onTap: () => _tapDigit('9')),
-                  key('0', onTap: () => _tapDigit('0')),
-                  key('', icon: Icons.backspace_outlined, onTap: _backspace),
-                ],
-              ),
+            child: GridView.count(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              crossAxisCount: 3, // ✅ always 3 per row
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing,
+              childAspectRatio: tileW / tileH,
+              children: [
+                key('1', onTap: () => _tapDigit('1')),
+                key('2', onTap: () => _tapDigit('2')),
+                key('3', onTap: () => _tapDigit('3')),
+                key('4', onTap: () => _tapDigit('4')),
+                key('5', onTap: () => _tapDigit('5')),
+                key('6', onTap: () => _tapDigit('6')),
+                key('7', onTap: () => _tapDigit('7')),
+                key('8', onTap: () => _tapDigit('8')),
+                key('9', onTap: () => _tapDigit('9')),
+
+                // ✅ centered last row: [empty] [0] [⌫]
+                const SizedBox.shrink(),
+                key('0', onTap: () => _tapDigit('0')),
+                key('', icon: Icons.backspace_outlined, onTap: _backspace),
+              ],
             ),
           ),
           const SizedBox(height: bottomGap),
@@ -905,6 +903,8 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
     },
   ),
 ),
+
+
 
           ],
         ),
@@ -1317,7 +1317,7 @@ class SongDetails extends StatelessWidget {
                                           
                                         ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 3),
                                   Text(
                                     headerRef,
                                     maxLines: 1,
@@ -1353,8 +1353,8 @@ class SongDetails extends StatelessWidget {
                                   rightInfo.bottom ?? 'Doh is —',
                                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                         fontWeight: FontWeight.w900,
-                                        fontSize: 15.5,
-                                        color: scheme.onSurface.withOpacity(0.95),
+                                        fontSize: 13,
+                                        color: scheme.onSurface.withOpacity(0.85),
                                       ),
                                 ),
                               ],
@@ -1364,7 +1364,7 @@ class SongDetails extends StatelessWidget {
 
                         // ◀ PREVIOUS (bottom-left)
                         Positioned(
-                          left: 80,
+                          left: 70,
                           bottom: 0,
                           child: IconButton(
                             tooltip: 'Previous hymn',
@@ -1375,7 +1375,7 @@ class SongDetails extends StatelessWidget {
 
                         // ▶ NEXT (bottom-right)
                         Positioned(
-                          right: 80,
+                          right: 70,
                           bottom: 0,
                           child: IconButton(
                             tooltip: 'Next hymn',
@@ -1489,7 +1489,7 @@ class _RightRow extends StatelessWidget {
             child: Text(clean(left), style: style),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 15),
         SizedBox(
           width: 60,
           child: Align(
@@ -1520,14 +1520,14 @@ class _HeaderActions extends StatelessWidget {
     Widget pill({required Widget child, required VoidCallback onTap}) {
       return Material(
         color: greener.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(600),
         child: InkWell(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(600),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
             child: IconTheme(
-              data: IconThemeData(color: greener, size: 18), // ✅ greener icons
+              data: IconThemeData(color: greener, size: 15), // ✅ greener icons
               child: child,
             ),
           ),
