@@ -2,7 +2,7 @@ name: Publish Flutter Web
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 permissions:
   contents: read
