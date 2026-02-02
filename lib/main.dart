@@ -1366,6 +1366,7 @@ class SongDetails extends StatelessWidget {
                         Positioned(
                           left: 70,
                           bottom: 0,
+                          top:40,
                           child: IconButton(
                             tooltip: 'Previous hymn',
                             icon: const Icon(Icons.arrow_left, size: 28),
@@ -1377,9 +1378,10 @@ class SongDetails extends StatelessWidget {
                         Positioned(
                           right: 70,
                           bottom: 0,
+                          top:40,
                           child: IconButton(
                             tooltip: 'Next hymn',
-                            icon: const Icon(Icons.arrow_right, size: 28),
+                            icon: const Icon(Icons.arrow_right, size: 25),
                             onPressed: index < allSongs.length - 1 ? goNext : null,
                           ),
                         ),
