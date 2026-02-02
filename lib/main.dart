@@ -433,10 +433,12 @@ class SdaLusogaHymnalApp extends StatelessWidget {
 
   // ✅ Cards consistent (no heavy borders)
   cardTheme: CardTheme(
-    elevation: 0,
-    color: Colors.white.withOpacity(0.85),
-    surfaceTintColor: Colors.transparent,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+  elevation: 0,
+  color: Colors.white.withOpacity(0.85),
+  surfaceTintColor: Colors.transparent,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(18),
+  ),
   ),
 
   // ✅ List tiles look “iOS premium”
