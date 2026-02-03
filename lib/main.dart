@@ -968,7 +968,7 @@ class _SongsHomeState extends State<SongsHome> {
           /// SEARCH
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 8),
               child: Card(
                 elevation: 0,
                 color: scheme.surfaceContainerHighest,
@@ -1040,9 +1040,9 @@ class _SongsHomeState extends State<SongsHome> {
                   return Column(
                     children: [
                       ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
                         leading: CircleAvatar(
-                          radius: 16,
+                          radius: 14,
                           backgroundColor: scheme.primary.withOpacity(0.12),
                           child: Text(
                             song.number.toString(),
@@ -1279,10 +1279,10 @@ class SongDetails extends StatelessWidget {
           SliverPersistentHeader(
             pinned: true,
             delegate: PinnedHeaderDelegate(
-              height: 125,
+              height: 130,
               child: Container(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                 child: Card(
                   elevation: 0,
                   color: scheme.surfaceContainerHighest,
