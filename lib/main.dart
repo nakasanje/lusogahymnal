@@ -1076,7 +1076,7 @@ class _SongsHomeState extends State<SongsHome> {
 
                       // divider starts after the number bubble
                       Padding(
-                        padding: const EdgeInsets.only(left: 72),
+                        padding: const EdgeInsets.only(left: 65),
                         child: Divider(
                           height: 1,
                           thickness: 1,
@@ -1282,7 +1282,7 @@ class SongDetails extends StatelessWidget {
               height: 125,
               child: Container(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 child: Card(
                   elevation: 0,
                   color: scheme.surfaceContainerHighest,
@@ -1369,7 +1369,7 @@ class SongDetails extends StatelessWidget {
                           top:35,
                           child: IconButton(
                             tooltip: 'Previous hymn',
-                            icon: const Icon(Icons.arrow_left, size: 28),
+                            icon: const Icon(Icons.arrow_left, size: 32),
                             onPressed: index > 0 ? goPrev : null,
                           ),
                         ),
@@ -1381,7 +1381,7 @@ class SongDetails extends StatelessWidget {
                           top:35,
                           child: IconButton(
                             tooltip: 'Next hymn',
-                            icon: const Icon(Icons.arrow_right, size: 28),
+                            icon: const Icon(Icons.arrow_right, size: 32),
                             onPressed: index < allSongs.length - 1 ? goNext : null,
                           ),
                         ),
@@ -1534,9 +1534,9 @@ class _HeaderActions extends StatelessWidget {
           borderRadius: BorderRadius.circular(600),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: IconTheme(
-              data: IconThemeData(color: greener, size: 17), // ✅ keep size
+              data: IconThemeData(color: greener, size: 18), // ✅ keep size
               child: child,
             ),
           ),
