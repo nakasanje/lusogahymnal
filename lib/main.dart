@@ -1279,10 +1279,10 @@ class SongDetails extends StatelessWidget {
           SliverPersistentHeader(
             pinned: true,
             delegate: PinnedHeaderDelegate(
-              height: 130,
+              height: 125,
               child: Container(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
                 child: Card(
                   elevation: 0,
                   color: scheme.surfaceContainerHighest,
