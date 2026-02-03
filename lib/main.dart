@@ -471,7 +471,7 @@ class SdaLusogaHymnalApp extends StatelessWidget {
   // ✅ Bottom Navigation (better colors + better contrast)
   navigationBarTheme: NavigationBarThemeData(
     elevation: 0,
-    height: 72,
+    height: 70,
     backgroundColor: Color.fromARGB(255, 155, 155, 152),
     indicatorColor: Color.fromARGB(255, 23, 92, 47).withOpacity(0.14),
     labelTextStyle: const WidgetStatePropertyAll(
@@ -984,7 +984,7 @@ class _SongsHomeState extends State<SongsHome> {
                         child: TextField(
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.search, color: scheme.onSurfaceVariant),
-                            hintText: 'Search hymn number or title',
+                            hintText: 'Search hymn',
                             border: InputBorder.none,
                             suffixIcon: query.trim().isEmpty
                                 ? null
@@ -1279,10 +1279,10 @@ class SongDetails extends StatelessWidget {
           SliverPersistentHeader(
             pinned: true,
             delegate: PinnedHeaderDelegate(
-              height: 118,
+              height: 125,
               child: Container(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
                 child: Card(
                   elevation: 0,
                   color: scheme.surfaceContainerHighest,
@@ -1534,9 +1534,9 @@ class _HeaderActions extends StatelessWidget {
           borderRadius: BorderRadius.circular(600),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: IconTheme(
-              data: IconThemeData(color: greener, size: 15), // ✅ keep size
+              data: IconThemeData(color: greener, size: 17), // ✅ keep size
               child: child,
             ),
           ),
