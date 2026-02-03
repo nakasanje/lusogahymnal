@@ -1369,7 +1369,7 @@ class SongDetails extends StatelessWidget {
                           top:35,
                           child: IconButton(
                             tooltip: 'Previous hymn',
-                            icon: const Icon(Icons.arrow_left, size: 32),
+                            icon: const Icon(Icons.arrow_left, size: 38),
                             onPressed: index > 0 ? goPrev : null,
                           ),
                         ),
@@ -1381,7 +1381,7 @@ class SongDetails extends StatelessWidget {
                           top:35,
                           child: IconButton(
                             tooltip: 'Next hymn',
-                            icon: const Icon(Icons.arrow_right, size: 32),
+                            icon: const Icon(Icons.arrow_right, size: 38),
                             onPressed: index < allSongs.length - 1 ? goNext : null,
                           ),
                         ),
@@ -1476,7 +1476,7 @@ class _RightRow extends StatelessWidget {
 
     final style = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w700,
-          fontSize: 11.5,
+          fontSize: 12,
           letterSpacing: 0.1,
           color: scheme.onSurface.withOpacity(0.70),
           height: 1.05,
