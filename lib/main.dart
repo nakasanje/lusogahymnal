@@ -390,140 +390,142 @@ class SdaLusogaHymnalApp extends StatelessWidget {
 
           // ✅ LIGHT THEME
           theme: ThemeData(
-  useMaterial3: true,
+            useMaterial3: true,
 
-  // ✅ Premium seed (not too dark, not too neon)
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xFF1E7A3E),
-    brightness: Brightness.light,
-  ),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF1E7A3E),
+              brightness: Brightness.light,
+            ),
 
-  // ✅ Clean warm background (looks expensive)
-  scaffoldBackgroundColor: const Color(0xFFF6F6F2),
+            scaffoldBackgroundColor: const Color(0xFFF6F6F2),
 
-  // ✅ Global typography feel
-  textTheme: const TextTheme(
-    titleLarge: TextStyle(fontWeight: FontWeight.w800),
-    titleMedium: TextStyle(fontWeight: FontWeight.w700),
-    bodyLarge: TextStyle(fontWeight: FontWeight.w500),
-    bodyMedium: TextStyle(fontWeight: FontWeight.w500),
-  ),
+            textTheme: const TextTheme(
+              titleLarge: TextStyle(fontWeight: FontWeight.w800),
+              titleMedium: TextStyle(fontWeight: FontWeight.w700),
+              bodyLarge: TextStyle(fontWeight: FontWeight.w500),
+              bodyMedium: TextStyle(fontWeight: FontWeight.w500),
+            ),
 
-  // ✅ AppBar that “gives”
-  appBarTheme: const AppBarTheme(
-    centerTitle: true,
-    elevation: 0,
-    scrolledUnderElevation: 0,
-    backgroundColor: Color(0xFFF6F6F2),
-    foregroundColor: Color(0xFF121212),
-    titleTextStyle: TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.w800,
-      color: Color(0xFF121212),
-      letterSpacing: 0.2,
-    ),
-  ),
+            appBarTheme: const AppBarTheme(
+              centerTitle: true,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              backgroundColor: Color(0xFFF6F6F2),
+              foregroundColor: Color(0xFF121212),
+              titleTextStyle: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF121212),
+                letterSpacing: 0.2,
+              ),
+            ),
 
-  // ✅ Premium separators
-  dividerTheme: DividerThemeData(
-    thickness: 1,
-    space: 1,
-    color: Colors.black.withOpacity(0.08),
-  ),
+            dividerTheme: DividerThemeData(
+              thickness: 1,
+              space: 1,
+              color: Colors.black.withOpacity(0.08),
+            ),
 
-  // ✅ Cards consistent (no heavy borders)
-  cardTheme: CardTheme(
-  elevation: 0,
-  color: Colors.white.withOpacity(0.85),
-  surfaceTintColor: Colors.transparent,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(18),
-  ),
-  ),
+            cardTheme: CardThemeData(
+              elevation: 0,
+              color: Colors.white.withOpacity(0.85),
+              surfaceTintColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
 
-  // ✅ List tiles look “iOS premium”
-  listTileTheme: ListTileThemeData(
-    iconColor: const Color(0xFF1E7A3E),
-    textColor: const Color(0xFF121212),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-  ),
+            listTileTheme: ListTileThemeData(
+              iconColor: const Color(0xFF1E7A3E),
+              textColor: const Color(0xFF121212),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            ),
 
-  // ✅ Input (search box) style
-  inputDecorationTheme: InputDecorationTheme(
-    filled: true,
-    fillColor: Colors.white.withOpacity(0.75),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide.none,
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: Color(0xFF1E7A3E), width: 1.2),
-    ),
-    hintStyle: TextStyle(color: Colors.black.withOpacity(0.45)),
-  ),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.white.withOpacity(0.75),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(color: Color(0xFF1E7A3E), width: 1.2),
+              ),
+              hintStyle: TextStyle(color: Colors.black.withOpacity(0.45)),
+            ),
 
-  // ✅ Bottom Navigation (better colors + better contrast)
-  navigationBarTheme: NavigationBarThemeData(
-    elevation: 0,
-    height: 70,
-    backgroundColor: Color.fromARGB(255, 155, 155, 152),
-    indicatorColor: Color.fromARGB(255, 23, 92, 47).withOpacity(0.14),
-    labelTextStyle: const WidgetStatePropertyAll(
-      TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
-    ),
-    iconTheme: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return const IconThemeData(size: 26, color: Color(0xFF1E7A3E));
-      }
-      return IconThemeData(size: 24, color: Colors.black.withOpacity(0.45));
-    }),
-  ),
-),
+            navigationBarTheme: NavigationBarThemeData(
+              elevation: 0,
+              height: 70,
+              backgroundColor: const Color.fromARGB(255, 155, 155, 152),
+              indicatorColor: const Color.fromARGB(255, 23, 92, 47).withOpacity(0.14),
+              labelTextStyle: const WidgetStatePropertyAll(
+                TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+              ),
+              iconTheme: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return const IconThemeData(size: 26, color: Color(0xFF1E7A3E));
+                }
+                return IconThemeData(size: 24, color: Colors.black.withOpacity(0.45));
+              }),
+            ),
+          ),
 
-darkTheme: ThemeData(
-  useMaterial3: true,
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xFF1E7A3E),
-    brightness: Brightness.dark,
-  ),
-  scaffoldBackgroundColor: const Color(0xFF0F1111),
+          // ✅ DARK THEME
+          darkTheme: ThemeData(
+            useMaterial3: true,
 
-  appBarTheme: const AppBarTheme(
-    centerTitle: true,
-    elevation: 0,
-    scrolledUnderElevation: 0,
-    backgroundColor: Color.fromARGB(255, 5, 5, 5),
-    foregroundColor: Color.fromARGB(255, 182, 179, 179),
-    titleTextStyle: TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.w800,
-      color: Colors.white,
-    ),
-  ),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF1E7A3E),
+              brightness: Brightness.dark,
+            ),
 
-  navigationBarTheme: NavigationBarThemeData(
-    elevation: 0,
-    height: 72,
-    backgroundColor: const Color.fromARGB(255, 5, 5, 5),
-    indicatorColor: const Color(0xFF1E7A3E).withOpacity(0.22),
-    labelTextStyle: const WidgetStatePropertyAll(
-      TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
-    ),
-    iconTheme: WidgetStateProperty.resolveWith((states) {
-      if (states.contains(WidgetState.selected)) {
-        return const IconThemeData(size: 26, color: Color(0xFF45D07B));
-      }
-      return IconThemeData(size: 24, color: Colors.white70);
-    }),
-  ),
-),
+            scaffoldBackgroundColor: const Color(0xFF0F1111),
 
+            appBarTheme: const AppBarTheme(
+              centerTitle: true,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              backgroundColor: Color.fromARGB(255, 5, 5, 5),
+              foregroundColor: Color.fromARGB(255, 182, 179, 179),
+              titleTextStyle: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
+
+            cardTheme: CardThemeData(
+              elevation: 0,
+              color: Colors.white.withOpacity(0.06),
+              surfaceTintColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
+
+            navigationBarTheme: NavigationBarThemeData(
+              elevation: 0,
+              height: 72,
+              backgroundColor: const Color.fromARGB(255, 5, 5, 5),
+              indicatorColor: const Color(0xFF1E7A3E).withOpacity(0.22),
+              labelTextStyle: const WidgetStatePropertyAll(
+                TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+              ),
+              iconTheme: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return const IconThemeData(size: 26, color: Color(0xFF45D07B));
+                }
+                return const IconThemeData(size: 24, color: Colors.white70);
+              }),
+            ),
+          ),
 
           home: const AppShell(),
         );
@@ -531,6 +533,7 @@ darkTheme: ThemeData(
     );
   }
 }
+
 
 
 /// ----------------------
