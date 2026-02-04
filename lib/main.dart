@@ -1,3 +1,4 @@
+// main.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,8 +20,6 @@ void main() {
   settings.loadFromPrefs();
   favorites.loadFromPrefs();
 }
-
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -67,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
       future: _songsFuture,
       builder: (context, snap) {
         if (snap.connectionState != ConnectionState.done) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
         }
 
         if (snap.hasError) {
@@ -80,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        final songs = (snap.data ?? [])..sort((a, b) => a.number.compareTo(b.number));
+        final songs = (snap.data ?? [])
+          ..sort((a, b) => a.number.compareTo(b.number));
 
         Song? lastSong;
         if (_lastOpened != null) {
@@ -116,7 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         fillColor: scheme.surfaceContainerHighest,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide(color: scheme.outlineVariant.withOpacity(0.25)),
+                          // ignore: deprecated_member_use
+                          borderSide: BorderSide(
+                              color: scheme.outlineVariant
+                                  .withValues(alpha: 0.25)),
                         ),
                       ),
                       onSubmitted: (_) => _openFromNumber(context, songs),
@@ -126,8 +130,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   FilledButton(
                     onPressed: () => _openFromNumber(context, songs),
                     style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
                     ),
                     child: const Text('Open'),
                   ),
@@ -141,24 +147,29 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8),
               Card(
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18)),
                 child: Column(
                   children: [
                     ListTile(
-                      leading: Icon(Icons.play_circle_outline, color: scheme.primary),
+                      leading: Icon(Icons.play_circle_outline,
+                          color: scheme.primary),
                       title: const Text('Continue reading'),
                       subtitle: Text(lastSong == null
                           ? 'Open any hymn to enable this.'
                           : '#${lastSong.number} — ${lastSong.title}'),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: lastSong == null
-    ? null
-    : () => _openSong(context, songs, lastSong!.number),
-
+                          ? null
+                          : () => _openSong(context, songs, lastSong!.number),
                     ),
-                    Divider(height: 1, color: scheme.outlineVariant.withOpacity(0.35)),
+                    Divider(
+                      height: 1,
+                      color: scheme.outlineVariant.withValues(alpha: 0.35),
+                    ),
                     ListTile(
-                      leading: Icon(Icons.shuffle_rounded, color: scheme.primary),
+                      leading:
+                          Icon(Icons.shuffle_rounded, color: scheme.primary),
                       title: const Text('Random hymn'),
                       subtitle: const Text('Surprise me'),
                       trailing: const Icon(Icons.chevron_right),
@@ -168,7 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         _openSong(context, songs, picked.number);
                       },
                     ),
-                    Divider(height: 1, color: scheme.outlineVariant.withOpacity(0.35)),
+                    Divider(
+                        height: 1,
+                        color: scheme.outlineVariant.withValues(alpha: 0.35)),
                     ListTile(
                       leading: Icon(Icons.star_outline, color: scheme.primary),
                       title: const Text('Open favorites'),
@@ -176,7 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
                         // Switch to Favorites tab (index = 2)
-                        final appShell = context.findAncestorStateOfType<_AppShellState>();
+                        final appShell =
+                            context.findAncestorStateOfType<_AppShellState>();
                         appShell?.setState(() => appShell.index = 2);
                       },
                     ),
@@ -195,7 +209,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 '• Tap ⭐ inside a hymn to save it.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       height: 1.35,
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      color: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.color
+                          ?.withValues(alpha: 0.75),
                     ),
               ),
             ],
@@ -205,7 +223,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  PreferredSizeWidget _premiumAppBar(BuildContext context, {required String title}) {
+  PreferredSizeWidget _premiumAppBar(BuildContext context,
+      {required String title}) {
     final scheme = Theme.of(context).colorScheme;
 
     return AppBar(
@@ -217,7 +236,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Divider(height: 1, color: scheme.outlineVariant.withOpacity(0.35)),
+        child: Divider(
+            height: 1, color: scheme.outlineVariant.withValues(alpha: 0.35)),
       ),
     );
   }
@@ -238,7 +258,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _openSong(context, songs, n);
   }
 
-  Future<void> _openSong(BuildContext context, List<Song> songs, int number) async {
+  Future<void> _openSong(
+      BuildContext context, List<Song> songs, int number) async {
     final idx = songs.indexWhere((s) => s.number == number);
 
     if (idx == -1) {
@@ -263,7 +284,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
 
 /// ----------------------
 /// APP SETTINGS (global + persisted)
@@ -391,21 +411,17 @@ class SdaLusogaHymnalApp extends StatelessWidget {
           // ✅ LIGHT THEME
           theme: ThemeData(
             useMaterial3: true,
-
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF1E7A3E),
               brightness: Brightness.light,
             ),
-
             scaffoldBackgroundColor: const Color(0xFFF6F6F2),
-
             textTheme: const TextTheme(
               titleLarge: TextStyle(fontWeight: FontWeight.w800),
               titleMedium: TextStyle(fontWeight: FontWeight.w700),
               bodyLarge: TextStyle(fontWeight: FontWeight.w500),
               bodyMedium: TextStyle(fontWeight: FontWeight.w500),
             ),
-
             appBarTheme: const AppBarTheme(
               centerTitle: true,
               elevation: 0,
@@ -419,60 +435,62 @@ class SdaLusogaHymnalApp extends StatelessWidget {
                 letterSpacing: 0.2,
               ),
             ),
-
             dividerTheme: DividerThemeData(
               thickness: 1,
               space: 1,
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
             ),
-
             cardTheme: CardThemeData(
               elevation: 0,
-              color: Colors.white.withOpacity(0.85),
+              color: Colors.white.withValues(alpha: 0.85),
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
-
             listTileTheme: ListTileThemeData(
               iconColor: const Color(0xFF1E7A3E),
               textColor: const Color(0xFF121212),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             ),
-
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
-              fillColor: Colors.white.withOpacity(0.75),
+              fillColor: Colors.white.withValues(alpha: 0.75),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.08)),
+                borderSide:
+                    BorderSide(color: Colors.black.withValues(alpha: 0.08)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Color(0xFF1E7A3E), width: 1.2),
+                borderSide:
+                    const BorderSide(color: Color(0xFF1E7A3E), width: 1.2),
               ),
-              hintStyle: TextStyle(color: Colors.black.withOpacity(0.45)),
+              hintStyle: TextStyle(color: Colors.black.withValues(alpha: 0.45)),
             ),
-
             navigationBarTheme: NavigationBarThemeData(
               elevation: 0,
               height: 70,
               backgroundColor: const Color.fromARGB(255, 155, 155, 152),
-              indicatorColor: const Color.fromARGB(255, 23, 92, 47).withOpacity(0.14),
+              indicatorColor:
+                  const Color.fromARGB(255, 23, 92, 47).withValues(alpha: 0.14),
               labelTextStyle: const WidgetStatePropertyAll(
                 TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
               ),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return const IconThemeData(size: 26, color: Color(0xFF1E7A3E));
+                  return const IconThemeData(
+                      size: 26, color: Color(0xFF1E7A3E));
                 }
-                return IconThemeData(size: 24, color: Colors.black.withOpacity(0.45));
+                return IconThemeData(
+                    size: 24, color: Colors.black.withValues(alpha: 0.45));
               }),
             ),
           ),
@@ -480,14 +498,11 @@ class SdaLusogaHymnalApp extends StatelessWidget {
           // ✅ DARK THEME
           darkTheme: ThemeData(
             useMaterial3: true,
-
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xFF1E7A3E),
               brightness: Brightness.dark,
             ),
-
             scaffoldBackgroundColor: const Color(0xFF0F1111),
-
             appBarTheme: const AppBarTheme(
               centerTitle: true,
               elevation: 0,
@@ -500,27 +515,26 @@ class SdaLusogaHymnalApp extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-
             cardTheme: CardThemeData(
               elevation: 0,
-              color: Colors.white.withOpacity(0.06),
+              color: Colors.white.withValues(alpha: 0.06),
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
-
             navigationBarTheme: NavigationBarThemeData(
               elevation: 0,
               height: 72,
               backgroundColor: const Color.fromARGB(255, 5, 5, 5),
-              indicatorColor: const Color(0xFF1E7A3E).withOpacity(0.22),
+              indicatorColor: const Color(0xFF1E7A3E).withValues(alpha: 0.22),
               labelTextStyle: const WidgetStatePropertyAll(
                 TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
               ),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return const IconThemeData(size: 26, color: Color(0xFF45D07B));
+                  return const IconThemeData(
+                      size: 26, color: Color(0xFF45D07B));
                 }
                 return const IconThemeData(size: 24, color: Colors.white70);
               }),
@@ -533,8 +547,6 @@ class SdaLusogaHymnalApp extends StatelessWidget {
     );
   }
 }
-
-
 
 /// ----------------------
 /// MODEL
@@ -594,7 +606,8 @@ class Song {
       title: (json['title'] ?? '').toString(),
       lyrics: (json['lyrics'] ?? '').toString(),
       reference: json['reference']?.toString(),
-      meta: metaJson is Map<String, dynamic> ? SongMeta.fromJson(metaJson) : null,
+      meta:
+          metaJson is Map<String, dynamic> ? SongMeta.fromJson(metaJson) : null,
     );
   }
 }
@@ -633,7 +646,6 @@ Future<List<Song>> loadSongs() async {
     return const [];
   }
 }
-
 
 /// ----------------------
 /// BOTTOM NAV SHELL
@@ -677,9 +689,9 @@ class _AppShellState extends State<AppShell> {
           body: IndexedStack(
             index: index,
             children: [
-              HomeJumpScreen(allSongs: songs),     // ✅ FIXED
-              SongsHome(allSongs: songs),          // ✅ FIXED
-              FavoritesScreen(allSongs: songs),    // ✅ FIXED
+              HomeJumpScreen(allSongs: songs), // ✅ FIXED
+              SongsHome(allSongs: songs), // ✅ FIXED
+              FavoritesScreen(allSongs: songs), // ✅ FIXED
               const SettingsScreen(),
             ],
           ),
@@ -687,10 +699,13 @@ class _AppShellState extends State<AppShell> {
             selectedIndex: index,
             onDestinationSelected: (i) => setState(() => index = i),
             destinations: const [
-              NavigationDestination(icon: Icon(Icons.apps_rounded), label: 'Home'),
-              NavigationDestination(icon: Icon(Icons.library_music), label: 'Songs'),
+              NavigationDestination(
+                  icon: Icon(Icons.apps_rounded), label: 'Home'),
+              NavigationDestination(
+                  icon: Icon(Icons.library_music), label: 'Songs'),
               NavigationDestination(icon: Icon(Icons.star), label: 'Favorites'),
-              NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
+              NavigationDestination(
+                  icon: Icon(Icons.settings), label: 'Settings'),
             ],
           ),
         );
@@ -698,7 +713,6 @@ class _AppShellState extends State<AppShell> {
     );
   }
 }
-
 
 // jump
 class HomeJumpScreen extends StatefulWidget {
@@ -727,8 +741,6 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
     if (text.isEmpty) return;
     setState(() => _controller.text = text.substring(0, text.length - 1));
   }
-
-  void _clear() => setState(() => _controller.clear());
 
   void _openHymn() {
     final n = int.tryParse(_controller.text.trim());
@@ -779,7 +791,8 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
               color: scheme.surfaceContainerHighest,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(color: scheme.outlineVariant.withOpacity(0.25)),
+                side: BorderSide(
+                    color: scheme.outlineVariant.withValues(alpha: 0.25)),
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
@@ -809,7 +822,6 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
                           ),
                         ),
                         const SizedBox(width: 10),
-                        
                       ],
                     ),
                   ],
@@ -821,94 +833,98 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
 
             // keypad expands safely on small screens
             Expanded(
-  child: LayoutBuilder(
-    builder: (context, c) {
-      const spacing = 10.0;
-      const buttonH = 52.0;
-      const bottomGap = 14.0;
+              child: LayoutBuilder(
+                builder: (context, c) {
+                  const spacing = 10.0;
+                  const buttonH = 52.0;
+                  const bottomGap = 14.0;
 
-      const rows = 4;
-      const cols = 3;
+                  const rows = 4;
+                  const cols = 3;
 
-      final tileW = (c.maxWidth - spacing * (cols - 1)) / cols;
+                  final tileW = (c.maxWidth - spacing * (cols - 1)) / cols;
 
-      final availableForGrid = c.maxHeight - buttonH - bottomGap;
+                  final availableForGrid = c.maxHeight - buttonH - bottomGap;
 
-      final tileHByHeight =
-          (availableForGrid - spacing * (rows - 1)) / rows;
+                  final tileHByHeight =
+                      (availableForGrid - spacing * (rows - 1)) / rows;
 
-      final tileHByWidth = tileW * 0.72;
+                  final tileHByWidth = tileW * 0.72;
 
-      final tileH = tileHByHeight < tileHByWidth ? tileHByHeight : tileHByWidth;
+                  final tileH = tileHByHeight < tileHByWidth
+                      ? tileHByHeight
+                      : tileHByWidth;
 
-      Widget key(String label, {VoidCallback? onTap, IconData? icon}) {
-        return SizedBox(
-          width: tileW,
-          height: tileH,
-          child: FilledButton.tonal(
-            style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              textStyle: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
+                  Widget key(String label,
+                      {VoidCallback? onTap, IconData? icon}) {
+                    return SizedBox(
+                      width: tileW,
+                      height: tileH,
+                      child: FilledButton.tonal(
+                        style: FilledButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        onPressed: onTap,
+                        child:
+                            icon != null ? Icon(icon, size: 26) : Text(label),
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: GridView.count(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: EdgeInsets.zero,
+                          crossAxisCount: 3, // ✅ always 3 per row
+                          crossAxisSpacing: spacing,
+                          mainAxisSpacing: spacing,
+                          childAspectRatio: tileW / tileH,
+                          children: [
+                            key('1', onTap: () => _tapDigit('1')),
+                            key('2', onTap: () => _tapDigit('2')),
+                            key('3', onTap: () => _tapDigit('3')),
+                            key('4', onTap: () => _tapDigit('4')),
+                            key('5', onTap: () => _tapDigit('5')),
+                            key('6', onTap: () => _tapDigit('6')),
+                            key('7', onTap: () => _tapDigit('7')),
+                            key('8', onTap: () => _tapDigit('8')),
+                            key('9', onTap: () => _tapDigit('9')),
+
+                            // ✅ centered last row: [empty] [0] [⌫]
+                            const SizedBox.shrink(),
+                            key('0', onTap: () => _tapDigit('0')),
+                            key('',
+                                icon: Icons.backspace_outlined,
+                                onTap: _backspace),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: bottomGap),
+                      SizedBox(
+                        width: double.infinity,
+                        height: buttonH,
+                        child: FilledButton(
+                          onPressed: canOpen ? _openHymn : null,
+                          child: const Text(
+                            'Open Hymn',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w900, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
-            onPressed: onTap,
-            child: icon != null ? Icon(icon, size: 26) : Text(label),
-          ),
-        );
-      }
-
-      return Column(
-        children: [
-          Expanded(
-            child: GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              crossAxisCount: 3, // ✅ always 3 per row
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: spacing,
-              childAspectRatio: tileW / tileH,
-              children: [
-                key('1', onTap: () => _tapDigit('1')),
-                key('2', onTap: () => _tapDigit('2')),
-                key('3', onTap: () => _tapDigit('3')),
-                key('4', onTap: () => _tapDigit('4')),
-                key('5', onTap: () => _tapDigit('5')),
-                key('6', onTap: () => _tapDigit('6')),
-                key('7', onTap: () => _tapDigit('7')),
-                key('8', onTap: () => _tapDigit('8')),
-                key('9', onTap: () => _tapDigit('9')),
-
-                // ✅ centered last row: [empty] [0] [⌫]
-                const SizedBox.shrink(),
-                key('0', onTap: () => _tapDigit('0')),
-                key('', icon: Icons.backspace_outlined, onTap: _backspace),
-              ],
-            ),
-          ),
-          const SizedBox(height: bottomGap),
-          SizedBox(
-            width: double.infinity,
-            height: buttonH,
-            child: FilledButton(
-              onPressed: canOpen ? _openHymn : null,
-              child: const Text(
-                'Open Hymn',
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
-              ),
-            ),
-          ),
-        ],
-      );
-    },
-  ),
-),
-
-
-
           ],
         ),
       ),
@@ -921,7 +937,6 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
     super.dispose();
   }
 }
-
 
 /// ----------------------
 /// HOME (Songs list)
@@ -950,7 +965,8 @@ class _SongsHomeState extends State<SongsHome> {
 
     final filtered = songs.where((s) {
       if (q.isEmpty) return true;
-      return s.title.toLowerCase().contains(q) || s.number.toString().contains(q);
+      return s.title.toLowerCase().contains(q) ||
+          s.number.toString().contains(q);
     }).toList();
 
     return Scaffold(
@@ -965,7 +981,6 @@ class _SongsHomeState extends State<SongsHome> {
           style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 0.2),
         ),
       ),
-
       body: CustomScrollView(
         slivers: [
           /// SEARCH
@@ -977,7 +992,8 @@ class _SongsHomeState extends State<SongsHome> {
                 color: scheme.surfaceContainerHighest,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
-                  side: BorderSide(color: scheme.outlineVariant.withOpacity(0.25)),
+                  side: BorderSide(
+                      color: scheme.outlineVariant.withValues(alpha: 0.25)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -986,7 +1002,8 @@ class _SongsHomeState extends State<SongsHome> {
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search, color: scheme.onSurfaceVariant),
+                            prefixIcon: Icon(Icons.search,
+                                color: scheme.onSurfaceVariant),
                             hintText: 'Search hymn',
                             border: InputBorder.none,
                             suffixIcon: query.trim().isEmpty
@@ -1038,15 +1055,18 @@ class _SongsHomeState extends State<SongsHome> {
                   final song = filtered[i];
 
                   // ✅ find real index in full list for next/prev navigation
-                  final realIndex = songs.indexWhere((s) => s.number == song.number);
+                  final realIndex =
+                      songs.indexWhere((s) => s.number == song.number);
 
                   return Column(
                     children: [
                       ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 2),
                         leading: CircleAvatar(
                           radius: 14,
-                          backgroundColor: scheme.primary.withOpacity(0.12),
+                          backgroundColor:
+                              scheme.primary.withValues(alpha: 0.12),
                           child: Text(
                             song.number.toString(),
                             style: TextStyle(
@@ -1060,7 +1080,8 @@ class _SongsHomeState extends State<SongsHome> {
                           song.title,
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
-                        trailing: Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+                        trailing: Icon(Icons.chevron_right,
+                            color: scheme.onSurfaceVariant),
                         onTap: () {
                           if (realIndex == -1) return;
 
@@ -1069,7 +1090,8 @@ class _SongsHomeState extends State<SongsHome> {
                             MaterialPageRoute(
                               builder: (_) => SongDetails(
                                 song: songs[realIndex],
-                                allSongs: songs, // ✅ full list for prev/next arrows
+                                allSongs:
+                                    songs, // ✅ full list for prev/next arrows
                                 index: realIndex,
                               ),
                             ),
@@ -1083,7 +1105,7 @@ class _SongsHomeState extends State<SongsHome> {
                         child: Divider(
                           height: 1,
                           thickness: 1,
-                          color: scheme.outlineVariant.withOpacity(0.35),
+                          color: scheme.outlineVariant.withValues(alpha: 0.65),
                         ),
                       ),
                     ],
@@ -1099,7 +1121,6 @@ class _SongsHomeState extends State<SongsHome> {
     );
   }
 }
-
 
 /// ----------------------
 /// FAVORITES TAB
@@ -1160,7 +1181,8 @@ class FavoritesScreen extends StatelessWidget {
                       ),
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: scheme.primary.withOpacity(0.12),
+                          backgroundColor:
+                              scheme.primary.withValues(alpha: 0.12),
                           child: Text(
                             song.number.toString(),
                             style: TextStyle(
@@ -1179,8 +1201,8 @@ class FavoritesScreen extends StatelessWidget {
                           onPressed: () => favorites.toggle(song.number),
                         ),
                         onTap: () {
-                          final idx =
-                              allSongs.indexWhere((s) => s.number == song.number);
+                          final idx = allSongs
+                              .indexWhere((s) => s.number == song.number);
                           if (idx == -1) return;
 
                           Navigator.push(
@@ -1291,7 +1313,8 @@ class SongDetails extends StatelessWidget {
                   color: scheme.surfaceContainerHighest,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: scheme.outlineVariant.withOpacity(0.25)),
+                    side: BorderSide(
+                        color: scheme.outlineVariant.withValues(alpha: 0.25)),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
@@ -1317,7 +1340,6 @@ class SongDetails extends StatelessWidget {
                                           fontSize: 14,
                                           fontWeight: FontWeight.w700,
                                           height: 1,
-                                          
                                         ),
                                   ),
                                   const SizedBox(height: 3),
@@ -1334,7 +1356,7 @@ class SongDetails extends StatelessWidget {
                                               .textTheme
                                               .bodyMedium
                                               ?.color
-                                              ?.withOpacity(0.7),
+                                              ?.withValues(alpha: 0.7),
                                         ),
                                   ),
                                 ],
@@ -1348,16 +1370,24 @@ class SongDetails extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                _RightRow(left: rightInfo.topLeft, right: rightInfo.topRight),
+                                _RightRow(
+                                    left: rightInfo.topLeft,
+                                    right: rightInfo.topRight),
                                 const SizedBox(height: 0.1),
-                                _RightRow(left: rightInfo.midLeft, right: rightInfo.midRight),
+                                _RightRow(
+                                    left: rightInfo.midLeft,
+                                    right: rightInfo.midRight),
                                 const SizedBox(height: 4),
                                 Text(
                                   rightInfo.bottom ?? 'Doh is —',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
                                         fontWeight: FontWeight.w900,
                                         fontSize: 13,
-                                        color: scheme.onSurface.withOpacity(0.85),
+                                        color: scheme.onSurface
+                                            .withValues(alpha: 0.85),
                                       ),
                                 ),
                               ],
@@ -1369,7 +1399,7 @@ class SongDetails extends StatelessWidget {
                         Positioned(
                           left: 40,
                           bottom: 0,
-                          top:35,
+                          top: 40,
                           child: IconButton(
                             tooltip: 'Previous hymn',
                             icon: const Icon(Icons.arrow_left, size: 38),
@@ -1381,24 +1411,24 @@ class SongDetails extends StatelessWidget {
                         Positioned(
                           right: 40,
                           bottom: 0,
-                          top:35,
+                          top: 40,
                           child: IconButton(
                             tooltip: 'Next hymn',
                             icon: const Icon(Icons.arrow_right, size: 38),
-                            onPressed: index < allSongs.length - 1 ? goNext : null,
+                            onPressed:
+                                index < allSongs.length - 1 ? goNext : null,
                           ),
                         ),
 
                         // ⭐ COPY SHARE (CENTER) — moved a bit lower
                         Positioned(
-  bottom: 0,
-  left: 0,
-  right: 0,
-  child: Center(
-    child: _HeaderActions(song: song),
-  ),
-),
-
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: _HeaderActions(song: song),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -1409,11 +1439,11 @@ class SongDetails extends StatelessWidget {
 
           // Lyrics content
           SliverToBoxAdapter(
-  child: Padding(
-    padding: const EdgeInsets.fromLTRB(16, 12, 16, 26),
-    child: buildLyricsView(context, song.lyrics),
-  ),
-),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 26),
+              child: buildLyricsView(context, song.lyrics),
+            ),
+          ),
         ],
       ),
     );
@@ -1466,7 +1496,7 @@ class _RightRow extends StatelessWidget {
   final String? left;
   final String? right;
 
-  const _RightRow({super.key, this.left, this.right});
+  const _RightRow({this.left, this.right});
 
   @override
   Widget build(BuildContext context) {
@@ -1481,7 +1511,7 @@ class _RightRow extends StatelessWidget {
           fontWeight: FontWeight.w700,
           fontSize: 12,
           letterSpacing: 0.1,
-          color: scheme.onSurface.withOpacity(0.70),
+          color: scheme.onSurface.withValues(alpha: 0.70),
           height: 1.05,
         );
 
@@ -1518,11 +1548,10 @@ class _RightRow extends StatelessWidget {
   }
 }
 
-
 /// ✅ Icons row in the middle (Favorites, Copy, Share)
 class _HeaderActions extends StatelessWidget {
   final Song song;
-  const _HeaderActions({super.key, required this.song});
+  const _HeaderActions({required this.song});
 
   @override
   Widget build(BuildContext context) {
@@ -1531,7 +1560,7 @@ class _HeaderActions extends StatelessWidget {
 
     Widget pill({required Widget child, required VoidCallback onTap}) {
       return Material(
-        color: greener.withOpacity(0.1),
+        color: greener.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(600),
         child: InkWell(
           borderRadius: BorderRadius.circular(600),
@@ -1549,7 +1578,8 @@ class _HeaderActions extends StatelessWidget {
 
     String shareText(Song s) {
       final header = '${s.number}. ${s.title}';
-      final lyrics = s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
+      final lyrics =
+          s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
       return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
     }
 
@@ -1600,7 +1630,6 @@ class _HeaderActions extends StatelessWidget {
   }
 }
 
-
 /// ----------------------
 /// ✅ PinnedHeaderDelegate
 /// ----------------------
@@ -1620,7 +1649,8 @@ class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return SizedBox.expand(child: child);
   }
 
@@ -1629,8 +1659,6 @@ class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
     return height != oldDelegate.height || child != oldDelegate.child;
   }
 }
-
-
 
 /// ----------------------
 /// LYRICS RENDERING (Verse + Chorus highlighting)
@@ -1649,7 +1677,6 @@ List<LyricsBlock> parseLyricsBlocks(String raw) {
     final l = line.trim().toLowerCase();
     return l.startsWith('chorus:') ||
         l.startsWith('refrain:') ||
-        
         l.startsWith('ddoboozi :');
   }
 
@@ -1732,7 +1759,6 @@ Widget buildLyricsView(BuildContext context, String raw) {
               ),
             ] else
               Text(b.text, style: baseStyle),
-
             const SizedBox(height: 20),
           ],
         ],
@@ -1781,7 +1807,7 @@ class _StanzaView extends StatelessWidget {
             style: style?.copyWith(
               fontSize: (style?.fontSize ?? 18) - 2,
               fontWeight: FontWeight.w700,
-              color: scheme.primary.withOpacity(0.85),
+              color: scheme.primary.withValues(alpha: 0.85),
             ),
           ),
         ),
@@ -1801,7 +1827,6 @@ class _StanzaView extends StatelessWidget {
   }
 }
 
-
 /// ----------------------
 /// SETTINGS SHEET
 /// ----------------------
@@ -1816,14 +1841,16 @@ class SettingsSheet extends StatelessWidget {
         builder: (_, __) {
           return Card(
             elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Reading settings', style: Theme.of(context).textTheme.titleLarge),
+                  Text('Reading settings',
+                      style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 14),
                   Text('Font size: ${settings.fontSize.toStringAsFixed(0)}'),
                   Slider(
@@ -1834,7 +1861,8 @@ class SettingsSheet extends StatelessWidget {
                     onChanged: settings.setFontSize,
                   ),
                   const SizedBox(height: 8),
-                  Text('Line spacing: ${settings.lineHeight.toStringAsFixed(2)}'),
+                  Text(
+                      'Line spacing: ${settings.lineHeight.toStringAsFixed(2)}'),
                   Slider(
                     value: settings.lineHeight,
                     min: 1.20,
@@ -1847,12 +1875,22 @@ class SettingsSheet extends StatelessWidget {
                   const SizedBox(height: 8),
                   SegmentedButton<ThemeMode>(
                     segments: const [
-                      ButtonSegment(value: ThemeMode.system, label: Text('System'), icon: Icon(Icons.brightness_auto)),
-                      ButtonSegment(value: ThemeMode.light, label: Text('Light'), icon: Icon(Icons.light_mode)),
-                      ButtonSegment(value: ThemeMode.dark, label: Text('Dark'), icon: Icon(Icons.dark_mode)),
+                      ButtonSegment(
+                          value: ThemeMode.system,
+                          label: Text('System'),
+                          icon: Icon(Icons.brightness_auto)),
+                      ButtonSegment(
+                          value: ThemeMode.light,
+                          label: Text('Light'),
+                          icon: Icon(Icons.light_mode)),
+                      ButtonSegment(
+                          value: ThemeMode.dark,
+                          label: Text('Dark'),
+                          icon: Icon(Icons.dark_mode)),
                     ],
                     selected: {settings.themeMode},
-                    onSelectionChanged: (set) => settings.setThemeMode(set.first),
+                    onSelectionChanged: (set) =>
+                        settings.setThemeMode(set.first),
                   ),
                   const SizedBox(height: 16),
                   Card(
@@ -1861,7 +1899,9 @@ class SettingsSheet extends StatelessWidget {
                       padding: const EdgeInsets.all(12),
                       child: Text(
                         'Preview: Katonda ye mulungi. (This is a sample preview.)',
-                        style: TextStyle(fontSize: settings.fontSize, height: settings.lineHeight),
+                        style: TextStyle(
+                            fontSize: settings.fontSize,
+                            height: settings.lineHeight),
                       ),
                     ),
                   ),
@@ -1920,7 +1960,8 @@ class _JumpToSheetState extends State<JumpToSheet> {
               fillColor: scheme.surfaceContainerHighest,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: scheme.outlineVariant.withOpacity(0.25)),
+                borderSide: BorderSide(
+                    color: scheme.outlineVariant.withValues(alpha: 0.25)),
               ),
             ),
             onSubmitted: (_) => _open(),
@@ -1939,7 +1980,11 @@ class _JumpToSheetState extends State<JumpToSheet> {
             child: Text(
               'Tip: You can also search from the Songs tab.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.color
+                        ?.withValues(alpha: 0.7),
                   ),
             ),
           ),
@@ -1960,6 +2005,3 @@ class _JumpToSheetState extends State<JumpToSheet> {
     super.dispose();
   }
 }
-
-
- 

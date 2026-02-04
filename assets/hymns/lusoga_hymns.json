@@ -10,7 +10,7 @@
       "by": "B. Dykes", 
       "doh": "E" 
     },
-    "lyrics": "1. Oli mwamufu inho musengwa ghaife\nTu-naghunangankyo tusaake erina lyo\nOlimwamufu inho ghakisa ghamaani\nKibumb(a) alifuga ense-nense.\n\n2. Oli mwamufu inho bamalaika\nBasuula engule okwetoloola enhandha\n(E)nkumi nemitwalo bakusaka bangi\nNga bwenkyali eira kiriba kityo.\n\n3. Oli mwamufu inho (o)lwebibi byaife\nTitusobola kukubona na maiso\nOlwobwamufu bwo ghazira namuntu\nAkufanaana olwobulungi bwo."
+    "lyrics": "1. Oli mwamufu inho musengwa ghaife\nTu-naghunangankyo tusaake erina lyo\nOlimwamufu inho ghakisa ghamaani\nKibumb(a) alifuga ense-nense.\n\n2. Oli mwamufu inho bamalaika\nBasuula engule okwetoloola enhandha\n(E)nkumi nemitwalo bakusaka bangi\nNga bwenkyali eira kiriba kityo.\n\n3. Oli mwamufu inho (o)lwebibi byaife\nTitusobola kukubona na maiso\nOlwobwamufu bwo ghazira namuntu\nAkufanaana olwobulungi bwo.\n\nOli mwanufu inho, Oli wakitisa\nByokola biboneneka kunsi nhimwigulu\n Oli mwanufu inho Ghakisa Ghamani,\n  Omwana no mwoyo omwamufu."
   },
   {
     "number": 2,
@@ -21,7 +21,7 @@
       "author": "J. J.",
       "tune": "4",
     "by": " Husband", "doh": "G" },
-    "lyrics": "1. Katu ku-saake (o)lwomwana kimoimo\nYesu (e)yafa ya-zukir(a) alimwigulu\n\nRefrain:\nAleluya Tukusaaka Aleluya Amiina\nAleluya tukusaaka Tughe Amaani go\n\n2. Katu ku-saake (o)lwomyo (o)mwamufu-\nAtulaga omwana oyo natwakira\n\n3. (E)kitiisa kikyo; omwana wentaama\n(E)yatufirira yatunaazaku ebibi\n\n4. Tughe amaani go twidhuz(e) okugonza\nOtughe nomyooyo gho ava mwigulu"
+    "lyrics": "1. Katu ku-saake (o)lwomwana kimoimo\nYesu (e)yafa ya-zukir(a) alimwigulu\n\nRefrain:\nAleluya Tukusaaka Aleluya Amiina\nAleluya tukusaaka Tughe Amaani go\n\n2. Katu ku-saake (o)lwomwooyo (o)mwamufu-\nAtulaga omwana oyo natwakira\n\n3. (E)kitiisa kikyo; omwana wentaama\n(E)yatufirira yatunaazaku ebibi\n\n4. Tughe amaani go twidhuz(e) okugonza\nOtughe nomyooyo gho ava mwigulu"
   },
   {
     "number": 3,
@@ -55,7 +55,7 @@
   },
   {
     "number": 6,
-    "title": "Mwe Amawanga Ag’oku Nsi",
+    "title": "Ku kyambi Kya kyabazinga",
     "reference": "CH 1 – Before Jehovah’s Awful Throne",
     "meta": { "meter": "4", "author": "John ", "tune": "4", "by": "Hatton", "doh": "C" },
     "lyrics": "1. Ku Kyambi Kya Kyabazinga; Imw(e) Amawanga Museete\nMumanhe Nga Katonda Yenka; N’atonda, Nazikiriza\n\n2. N’amaani G(e) Amakologho; Yatukol(a) Ife Mwitosi\nEra Bwetwaghata Ng(a) Entaama; Yatunoonhia Yatwiiz(a) Eka\n\n3. Tulyemb(a) Enhemb(o) Edh’okusaaka; Mumamiro Agamaani\nMunhimi Dhoonadoon(a) Edh’ensi; Tulimusaakanga Yesu\n\n4. (E)biragiro Bye Bikologho; Okugonza Kwe Kw’amaani\n(A)mazima ge Galyooti Lubaale; Galibaagho Ense N’ense"
@@ -111,7 +111,7 @@
   },
   {
     "number": 14,
-    "title": "Ka Ntambule Naawe",
+    "title": "Kantambule nighe yesu",
     "reference": "CH 39 – O Let Me Walk with Thee",
     "meta": { "meter": "An 3", "author": "Edwin ", "tune": "4", "by": "Barnes", "doh": "A" },
     "lyrics": "1. Kantambule nighe yesu nga’ enok(a) eira bweyakola\nNgema kumukono gwange gunwerezenga mugugwo\nEngiranga embuzeku yesu kantambule nighe.\n\n2. Tisobola kuja zenka ekisinsi nga kigemye\nNibwebateg(a) emitego nga batudhu bali agho\nGhaire mbita mumasiira aye kantambule nighe\n\n3. Leka nfirwe ebyensieno ngontaire mu makonogo\nNobugumu nobuzira ngangemye ebenderayo\nNdituuk’eyo mu sioni aye kantambule nighe"
@@ -1004,7 +1004,7 @@
   },
   {
     "number": 92,
-    "title": "Nga Ffe Tutunuulira",
+    "title": "Obwire bughayo Mangu",
     "reference": "CH 51 – Day is Dying in the West",
     "meta": {
       "meter": "4",
