@@ -415,7 +415,7 @@ class SdaLusogaHymnalApp extends StatelessWidget {
               seedColor: const Color(0xFF1E7A3E),
               brightness: Brightness.light,
             ),
-            scaffoldBackgroundColor: const Color(0xFFF6F6F2),
+            scaffoldBackgroundColor: Colors.white,
             textTheme: const TextTheme(
               titleLarge: TextStyle(fontWeight: FontWeight.w800),
               titleMedium: TextStyle(fontWeight: FontWeight.w700),
@@ -1305,131 +1305,137 @@ class SongDetails extends StatelessWidget {
             pinned: true,
             delegate: PinnedHeaderDelegate(
               height: 125,
-              child: Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-                child: Card(
-                  elevation: 0,
-                  color: scheme.surfaceContainerHighest,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(
-                        color: scheme.outlineVariant.withValues(alpha: 0.25)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Stack(
-                      children: [
-                        // MAIN ROW (Left + Right)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // LEFT SIDE
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+              child: SafeArea(
+                bottom: false,
+                child: Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  padding: const EdgeInsets.fromLTRB(6, 10, 6, 10),
+                  child: Card(
+                    elevation: 0,
+                    color: scheme.surfaceContainerHighest,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(
+                        color: scheme.outlineVariant.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Stack(
+                        children: [
+                          // MAIN ROW (Left + Right)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // LEFT SIDE
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${song.number}  ${song.title}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall
+                                          ?.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            height: 1,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      headerRef,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontSize: 10,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.color
+                                                ?.withValues(alpha: 0.7),
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const SizedBox(width: 10),
+
+                              // RIGHT SIDE
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    '${song.number}  ${song.title}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall
-                                        ?.copyWith(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w700,
-                                          height: 1,
-                                        ),
+                                  _RightRow(
+                                    left: rightInfo.topLeft,
+                                    right: rightInfo.topRight,
                                   ),
-                                  const SizedBox(height: 3),
+                                  const SizedBox(height: 0.1),
+                                  _RightRow(
+                                    left: rightInfo.midLeft,
+                                    right: rightInfo.midRight,
+                                  ),
+                                  const SizedBox(height: 4),
                                   Text(
-                                    headerRef,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                    rightInfo.bottom ?? 'Doh is —',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
                                         ?.copyWith(
-                                          fontSize: 10,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.color
-                                              ?.withValues(alpha: 0.7),
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 13,
+                                          color: scheme.onSurface
+                                              .withValues(alpha: 0.85),
                                         ),
                                   ),
                                 ],
                               ),
+                            ],
+                          ),
+
+                          // ◀ PREVIOUS
+                          Positioned(
+                            left: 40,
+                            top: 40,
+                            bottom: 0,
+                            child: IconButton(
+                              tooltip: 'Previous hymn',
+                              icon: const Icon(Icons.arrow_left, size: 38),
+                              onPressed: index > 0 ? goPrev : null,
                             ),
+                          ),
 
-                            const SizedBox(width: 10),
-
-                            // RIGHT SIDE
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                _RightRow(
-                                    left: rightInfo.topLeft,
-                                    right: rightInfo.topRight),
-                                const SizedBox(height: 0.1),
-                                _RightRow(
-                                    left: rightInfo.midLeft,
-                                    right: rightInfo.midRight),
-                                const SizedBox(height: 4),
-                                Text(
-                                  rightInfo.bottom ?? 'Doh is —',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 13,
-                                        color: scheme.onSurface
-                                            .withValues(alpha: 0.85),
-                                      ),
-                                ),
-                              ],
+                          // ▶ NEXT
+                          Positioned(
+                            right: 40,
+                            top: 40,
+                            bottom: 0,
+                            child: IconButton(
+                              tooltip: 'Next hymn',
+                              icon: const Icon(Icons.arrow_right, size: 38),
+                              onPressed:
+                                  index < allSongs.length - 1 ? goNext : null,
                             ),
-                          ],
-                        ),
-
-                        // ◀ PREVIOUS (bottom-left)
-                        Positioned(
-                          left: 40,
-                          bottom: 0,
-                          top: 40,
-                          child: IconButton(
-                            tooltip: 'Previous hymn',
-                            icon: const Icon(Icons.arrow_left, size: 38),
-                            onPressed: index > 0 ? goPrev : null,
                           ),
-                        ),
 
-                        // ▶ NEXT (bottom-right)
-                        Positioned(
-                          right: 40,
-                          bottom: 0,
-                          top: 40,
-                          child: IconButton(
-                            tooltip: 'Next hymn',
-                            icon: const Icon(Icons.arrow_right, size: 38),
-                            onPressed:
-                                index < allSongs.length - 1 ? goNext : null,
+                          // ⭐ COPY SHARE (CENTER)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Center(
+                              child: _HeaderActions(song: song),
+                            ),
                           ),
-                        ),
-
-                        // ⭐ COPY SHARE (CENTER) — moved a bit lower
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Center(
-                            child: _HeaderActions(song: song),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1437,7 +1443,7 @@ class SongDetails extends StatelessWidget {
             ),
           ),
 
-          // Lyrics content
+          // ✅ Lyrics content (this must be OUTSIDE the header)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 26),
