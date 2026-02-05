@@ -1765,7 +1765,7 @@ Widget buildLyricsView(BuildContext context, String raw) {
               ),
             ] else
               Text(b.text, style: baseStyle),
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
           ],
         ],
       );
