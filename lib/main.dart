@@ -1115,7 +1115,7 @@ class _SongsHomeState extends State<SongsHome> {
               ),
             ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 12)),
+          const SliverToBoxAdapter(child: SizedBox(height: 10)),
         ],
       ),
     );
