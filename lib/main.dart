@@ -1337,7 +1337,7 @@ class _SongDetailsState extends State<SongDetails> {
     const maxPageWidth = 920.0;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
         child: Scrollbar(
@@ -1431,7 +1431,8 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).scaffoldBackgroundColor,
+
       // ✅ small consistent padding like your inspiration
       padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
       child: Center(
@@ -1537,7 +1538,7 @@ class _PremiumHeaderCard extends StatelessWidget {
           final w = c.maxWidth;
 
           // ✅ stable sizing across devices
-          final titleSize = (w * 0.028).clamp(15.5, 18.0);
+          final titleSize = (w * 0.032).clamp(16.5, 18.0);
           final refSize = (w * 0.020).clamp(11.0, 13.0);
           final dohSize = (w * 0.024).clamp(12.0, 15.0);
 
@@ -1558,6 +1559,7 @@ class _PremiumHeaderCard extends StatelessWidget {
                             fontWeight: FontWeight.w900,
                             height: 1.05,
                             letterSpacing: 0.1,
+                            color: scheme.onSurface,
                           ),
                     ),
                     const SizedBox(height: 6),
@@ -1671,7 +1673,7 @@ class _NavCircle extends StatelessWidget {
               opacity: enabled ? 1 : 0.35,
               child: Icon(
                 icon,
-                size: 28,
+                size: 18,
                 color: scheme.onSurface.withValues(alpha: 0.90),
               ),
             ),
@@ -1943,19 +1945,31 @@ List<LyricsBlock> parseLyricsBlocks(String raw) {
 
 Widget buildLyricsView(BuildContext context, String raw) {
   final scheme = Theme.of(context).colorScheme;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
   final blocks = parseLyricsBlocks(raw);
 
   if (raw.trim().isEmpty) {
-    return const Text('Lyrics not added yet.');
+    return Text(
+      'Lyrics not added yet.',
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: scheme.onSurface.withValues(alpha: 0.85),
+          ),
+    );
   }
 
   return AnimatedBuilder(
     animation: settings,
     builder: (_, __) {
+      // ✅ Strong readable text color (prevents "faded/blurred" look)
+      final lyricsColor = isDark
+          ? scheme.onSurface.withValues(alpha: 0.92)
+          : scheme.onSurface.withValues(alpha: 0.88);
+
       final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: settings.fontSize,
-            height: 1.20,
+            height: 1.25, // ✅ slightly more readable than 1.20
             fontWeight: FontWeight.w500,
+            color: lyricsColor, // ✅ FIX
           );
 
       if (blocks.isEmpty) {
@@ -1967,26 +1981,28 @@ Widget buildLyricsView(BuildContext context, String raw) {
         children: [
           for (final b in blocks) ...[
             if (b.isChorus) ...[
-              // ✅ Chorus label (no container)
+              // ✅ Chorus label
               Text(
                 'Chorus',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: scheme.primary,
+                      color: scheme.primary.withValues(alpha: 0.95),
                       fontWeight: FontWeight.w800,
+                      letterSpacing: 0.2,
                     ),
               ),
               const SizedBox(height: 8),
 
-              // ✅ Chorus text — slight emphasis only
+              // ✅ Chorus text (slightly stronger)
               _StanzaView(
                 text: b.text,
                 style: baseStyle?.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: lyricsColor.withValues(alpha: 0.96),
                 ),
               ),
             ] else
               Text(b.text, style: baseStyle),
-            const SizedBox(height: 25),
+            const SizedBox(height: 27),
           ],
         ],
       );
