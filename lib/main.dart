@@ -728,7 +728,10 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
           index: idx,
         ),
       ),
-    );
+    ).then((_) {
+      _controller.clear(); // ✅ reset text
+      setState(() {}); // ✅ refresh UI
+    });
   }
 
   @override
