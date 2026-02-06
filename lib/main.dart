@@ -1774,13 +1774,13 @@ class _HeaderActionsBest extends StatelessWidget {
     }) {
       return Material(
         color: accent.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(999),
+        borderRadius: BorderRadius.circular(8), // ✅ square
         child: InkWell(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(8), // ✅ square tap ripple
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(8), // ✅ square
               border: Border.all(
                 color: scheme.outlineVariant.withValues(alpha: 0.22),
               ),
