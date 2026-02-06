@@ -1303,45 +1303,54 @@ class _SongDetailsState extends State<SongDetails> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        bottom: false,
-        child: Scrollbar(
-          thumbVisibility: kIsWeb,
-          child: CustomScrollView(
-            slivers: [
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: PinnedHeaderDelegate(
-                  height: _headerHeight,
-                  child: _PremiumPinnedHeaderBest(
-                    key: _headerKey, // ✅ measure this exact widget
-                    song: widget.song,
-                    headerRef: headerRef,
-                    rightInfo: rightInfo,
-                    canPrev: widget.index > 0,
-                    canNext: widget.index < widget.allSongs.length - 1,
-                    onPrev: goPrev,
-                    onNext: goNext,
-                    maxWidth: maxPageWidth,
-                  ),
-                ),
-              ),
+      body: Column(
+        children: [
+          // 👉 THIS fixes the ugly top outside color
+          Container(
+            height: MediaQuery.of(context).padding.top,
+            color: Theme.of(context).scaffoldBackgroundColor,
+          ),
 
-              // ✅ Lyrics tight to header (no big white gap)
-              SliverToBoxAdapter(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: maxPageWidth),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(14, 6, 14, 28),
-                      child: buildLyricsView(context, widget.song.lyrics),
+          Expanded(
+            child: Scrollbar(
+              child: CustomScrollView(
+                slivers: [
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: PinnedHeaderDelegate(
+                      height: _headerHeight,
+                      child: _PremiumPinnedHeaderBest(
+                        key: _headerKey, // ✅ measure this exact widget
+                        song: widget.song,
+                        headerRef: headerRef,
+                        rightInfo: rightInfo,
+                        canPrev: widget.index > 0,
+                        canNext: widget.index < widget.allSongs.length - 1,
+                        onPrev: goPrev,
+                        onNext: goNext,
+                        maxWidth: maxPageWidth,
+                      ),
                     ),
                   ),
-                ),
+
+                  // ✅ Lyrics tight to header (no big white gap)
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints:
+                            const BoxConstraints(maxWidth: maxPageWidth),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 6, 14, 28),
+                          child: buildLyricsView(context, widget.song.lyrics),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
