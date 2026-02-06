@@ -1252,7 +1252,11 @@ class SettingsScreen extends StatelessWidget {
 /// ----------------------
 /// ----------------------
 
-class SongDetails extends StatelessWidget {
+// ✅ FULL corrected SongDetails (same look on big + small screens)
+// ✅ Fixes: missing header, white gaps, crushed right column, consistent controls row
+// ✅ Uses measured pinned-header height (no guessing)
+
+class SongDetails extends StatefulWidget {
   final Song song;
   final List<Song> allSongs;
   final int index;
@@ -1265,52 +1269,75 @@ class SongDetails extends StatelessWidget {
   });
 
   @override
+  State<SongDetails> createState() => _SongDetailsState();
+}
+
+class _SongDetailsState extends State<SongDetails> {
+  final GlobalKey _headerKey = GlobalKey();
+  double _headerHeight = 190; // safe default before measuring
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measureHeader());
+  }
+
+  @override
+  void didUpdateWidget(covariant SongDetails oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // re-measure when song changes
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measureHeader());
+  }
+
+  void _measureHeader() {
+    final ctx = _headerKey.currentContext;
+    if (ctx == null) return;
+    final ro = ctx.findRenderObject();
+    if (ro is! RenderBox) return;
+
+    final h = ro.size.height;
+    if (h.isFinite && (h - _headerHeight).abs() > 1) {
+      setState(() => _headerHeight = h);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final headerRef = _bestReferenceLine(song);
-    final rightInfo = _bestRightInfo(song.meta);
+    final headerRef = _bestReferenceLine(widget.song);
+    final rightInfo = _bestRightInfo(widget.song.meta);
 
     void goPrev() {
-      if (index <= 0) return;
+      if (widget.index <= 0) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => SongDetails(
-            song: allSongs[index - 1],
-            allSongs: allSongs,
-            index: index - 1,
+            song: widget.allSongs[widget.index - 1],
+            allSongs: widget.allSongs,
+            index: widget.index - 1,
           ),
         ),
       );
     }
 
     void goNext() {
-      if (index >= allSongs.length - 1) return;
+      if (widget.index >= widget.allSongs.length - 1) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => SongDetails(
-            song: allSongs[index + 1],
-            allSongs: allSongs,
-            index: index + 1,
+            song: widget.allSongs[widget.index + 1],
+            allSongs: widget.allSongs,
+            index: widget.index + 1,
           ),
         ),
       );
     }
 
-    // ✅ Responsive pinned header height (header on top, buttons just below)
-    final ts = MediaQuery.textScalerOf(context).scale(1);
-
-    final w = MediaQuery.sizeOf(context).width;
-    final isTight = w < 360;
-
-    final controlsH = isTight ? 92.0 : 56.0;
-    final headerCardH = (128 + ((ts - 1) * 34)).clamp(130.0, 176.0);
-    final headerHeight = headerCardH + controlsH - 17;
-
     const maxPageWidth = 920.0;
 
     return Scaffold(
-      backgroundColor: Colors.white, // ✅ page background white
+      backgroundColor: Colors.white,
       body: SafeArea(
         bottom: false,
         child: Scrollbar(
@@ -1320,13 +1347,14 @@ class SongDetails extends StatelessWidget {
               SliverPersistentHeader(
                 pinned: true,
                 delegate: PinnedHeaderDelegate(
-                  height: headerHeight,
+                  height: _headerHeight,
                   child: _PremiumPinnedHeaderBest(
-                    song: song,
+                    key: _headerKey, // ✅ measure this exact widget
+                    song: widget.song,
                     headerRef: headerRef,
                     rightInfo: rightInfo,
-                    canPrev: index > 0,
-                    canNext: index < allSongs.length - 1,
+                    canPrev: widget.index > 0,
+                    canNext: widget.index < widget.allSongs.length - 1,
                     onPrev: goPrev,
                     onNext: goNext,
                     maxWidth: maxPageWidth,
@@ -1334,14 +1362,14 @@ class SongDetails extends StatelessWidget {
                 ),
               ),
 
-              // ✅ Lyrics NOT in a card (just clean padding on white)
+              // ✅ Lyrics tight to header (no big white gap)
               SliverToBoxAdapter(
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: maxPageWidth),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 0),
-                      child: buildLyricsView(context, song.lyrics),
+                      padding: const EdgeInsets.fromLTRB(14, 6, 14, 28),
+                      child: buildLyricsView(context, widget.song.lyrics),
                     ),
                   ),
                 ),
@@ -1389,6 +1417,7 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
   final double maxWidth;
 
   const _PremiumPinnedHeaderBest({
+    super.key,
     required this.song,
     required this.headerRef,
     required this.rightInfo,
@@ -1402,24 +1431,22 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white, // ✅ pinned header background white
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-
+      color: Colors.white,
+      // ✅ small consistent padding like your inspiration
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
       child: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ✅ Header FIRST (top)
               _PremiumHeaderCard(
                 song: song,
                 headerRef: headerRef,
                 rightInfo: rightInfo,
               ),
-
-              // ✅ Buttons immediately below (no SizedBox spacing)
-              _TopControlsBar(
+              const SizedBox(height: 6),
+              _ControlsRow(
                 song: song,
                 canPrev: canPrev,
                 canNext: canNext,
@@ -1434,15 +1461,15 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
   }
 }
 
-/// ✅ Controls bar (responsive)
-class _TopControlsBar extends StatelessWidget {
+/// ✅ Always same on all screens: Prev | Actions | Next
+class _ControlsRow extends StatelessWidget {
   final Song song;
   final bool canPrev;
   final bool canNext;
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
-  const _TopControlsBar({
+  const _ControlsRow({
     required this.song,
     required this.canPrev,
     required this.canNext,
@@ -1452,58 +1479,24 @@ class _TopControlsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, c) {
-        // ✅ iPhone Safari looks cleaner if we go compact a bit earlier
-        final isTight = c.maxWidth < 430;
-
-        if (isTight) {
-          return Column(
-            children: [
-              Row(
-                children: [
-                  _NavCircle(
-                    enabled: canPrev,
-                    tooltip: 'Previous',
-                    icon: Icons.chevron_left,
-                    onTap: onPrev,
-                  ),
-                  const Spacer(),
-                  _NavCircle(
-                    enabled: canNext,
-                    tooltip: 'Next',
-                    icon: Icons.chevron_right,
-                    onTap: onNext,
-                  ),
-                ],
-              ),
-              Center(child: _HeaderActionsCompact(song: song)),
-            ],
-          );
-        }
-
-        return Row(
-          children: [
-            _NavCircle(
-              enabled: canPrev,
-              tooltip: 'Previous',
-              icon: Icons.chevron_left,
-              onTap: onPrev,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Center(child: _HeaderActionsBest(song: song)),
-            ),
-            const SizedBox(width: 10),
-            _NavCircle(
-              enabled: canNext,
-              tooltip: 'Next',
-              icon: Icons.chevron_right,
-              onTap: onNext,
-            ),
-          ],
-        );
-      },
+    return Row(
+      children: [
+        _NavCircle(
+          enabled: canPrev,
+          tooltip: 'Previous',
+          icon: Icons.chevron_left,
+          onTap: onPrev,
+        ),
+        const SizedBox(width: 8),
+        Expanded(child: Center(child: _HeaderActionsBest(song: song))),
+        const SizedBox(width: 8),
+        _NavCircle(
+          enabled: canNext,
+          tooltip: 'Next',
+          icon: Icons.chevron_right,
+          onTap: onNext,
+        ),
+      ],
     );
   }
 }
@@ -1525,7 +1518,7 @@ class _PremiumHeaderCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest, // solid color now
+        color: scheme.surfaceContainerHighest,
         border: Border.all(
           color: scheme.outlineVariant.withValues(alpha: 0.28),
         ),
@@ -1542,9 +1535,11 @@ class _PremiumHeaderCard extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, c) {
           final w = c.maxWidth;
-          final titleSize = (w * 0.030).clamp(15.5, 18.0);
-          final refSize = (w * 0.024).clamp(11.0, 13.0);
-          final dohSize = (w * 0.028).clamp(12.0, 15.0);
+
+          // ✅ stable sizing across devices
+          final titleSize = (w * 0.028).clamp(15.5, 18.0);
+          final refSize = (w * 0.020).clamp(11.0, 13.0);
+          final dohSize = (w * 0.024).clamp(12.0, 15.0);
 
           return Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1595,12 +1590,12 @@ class _PremiumHeaderCard extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(width: 8), // ✅ slightly tighter
+              const SizedBox(width: 10),
 
-              // RIGHT (wider so meter/tune/author/by extend more)
+              // RIGHT ✅ FIXED: do NOT clamp to 60..100 (that crushes it)
               ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: (w * 0.42).clamp(60.0, 100.0), // ✅ wider
+                  maxWidth: (w * 0.42).clamp(80.0, 100.0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -1704,7 +1699,6 @@ class _RightInfo {
   });
 }
 
-/// Right-side row
 class _RightRow extends StatelessWidget {
   final String? left;
   final String? right;
@@ -1729,9 +1723,7 @@ class _RightRow extends StatelessWidget {
         );
 
     return Row(
-      mainAxisSize: MainAxisSize.max,
       children: [
-        // LEFT small column (meter/tune)
         Flexible(
           flex: 3,
           child: Text(
@@ -1743,8 +1735,6 @@ class _RightRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-
-        // RIGHT column (author/by)
         Flexible(
           flex: 7,
           child: Text(
@@ -1760,7 +1750,7 @@ class _RightRow extends StatelessWidget {
   }
 }
 
-/// ✅ BEST: smaller icon + label chips (cleaner on iPhone)
+/// ✅ Actions (small + wraps nicely on mobile)
 class _HeaderActionsBest extends StatelessWidget {
   final Song song;
   const _HeaderActionsBest({required this.song});
@@ -1795,18 +1785,17 @@ class _HeaderActionsBest extends StatelessWidget {
                 color: scheme.outlineVariant.withValues(alpha: 0.22),
               ),
             ),
-            padding: const EdgeInsets.symmetric(
-                horizontal: 7, vertical: 7), // ✅ smaller
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 15, color: accent), // ✅ smaller icon
-                const SizedBox(width: 6), // ✅ tighter
+                Icon(icon, size: 16, color: accent),
+                const SizedBox(width: 6),
                 Text(
                   label,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w800,
-                        fontSize: 12, // ✅ consistent small
+                        fontSize: 12,
                         color: scheme.onSurface.withValues(alpha: 0.86),
                       ),
                 ),
@@ -1818,8 +1807,8 @@ class _HeaderActionsBest extends StatelessWidget {
     }
 
     return Wrap(
-      spacing: 6, // ✅ tighter
-      runSpacing: 4, // ✅ tighter
+      spacing: 8,
+      runSpacing: 6,
       alignment: WrapAlignment.center,
       children: [
         AnimatedBuilder(
@@ -1860,103 +1849,6 @@ class _HeaderActionsBest extends StatelessWidget {
         ),
         chip(
           label: 'Share',
-          icon: Icons.share,
-          onTap: () => Share.share(shareText(song)),
-        ),
-      ],
-    );
-  }
-}
-
-/// ✅ COMPACT: icon-only (very small screens)
-class _HeaderActionsCompact extends StatelessWidget {
-  final Song song;
-  const _HeaderActionsCompact({required this.song});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final accent = Color.lerp(scheme.primary, Colors.green, 0.35)!;
-
-    String shareText(Song s) {
-      final header = '${s.number}. ${s.title}';
-      final lyrics =
-          s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
-      return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
-    }
-
-    Widget pill({
-      required IconData icon,
-      required VoidCallback onTap,
-      required String tooltip,
-    }) {
-      return Tooltip(
-        message: tooltip,
-        child: Material(
-          color: accent.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(999),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(999),
-            onTap: onTap,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(
-                  color: scheme.outlineVariant.withValues(alpha: 0.22),
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 10, vertical: 8), // ✅ smaller
-              child: Icon(icon, size: 16, color: accent), // ✅ smaller
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Wrap(
-      spacing: 6,
-      runSpacing: 4,
-      alignment: WrapAlignment.center,
-      children: [
-        AnimatedBuilder(
-          animation: favorites,
-          builder: (_, __) {
-            final isFav = favorites.isFav(song.number);
-            return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 1.0, end: isFav ? 1.08 : 1.0),
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeOut,
-              builder: (context, scale, child) =>
-                  Transform.scale(scale: scale, child: child),
-              child: pill(
-                tooltip: 'Favorite',
-                icon: isFav ? Icons.favorite : Icons.favorite_border,
-                onTap: () => favorites.toggle(song.number),
-              ),
-            );
-          },
-        ),
-        pill(
-          tooltip: 'Copy',
-          icon: Icons.copy,
-          onTap: () async {
-            await Clipboard.setData(ClipboardData(text: shareText(song)));
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Copied!'),
-                  behavior: SnackBarBehavior.floating,
-                  width: 220,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
-                ),
-              );
-            }
-          },
-        ),
-        pill(
-          tooltip: 'Share',
           icon: Icons.share,
           onTap: () => Share.share(shareText(song)),
         ),
