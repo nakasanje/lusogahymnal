@@ -410,81 +410,85 @@ class SdaLusogaHymnalApp extends StatelessWidget {
           themeMode: settings.themeMode,
 
           // ✅ LIGHT THEME
-          // ✅ LIGHT THEME — Blue Hymnal
+          // ✅ LIGHT THEME — High Contrast Blue
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF1F4E79), // church blue
+              seedColor: const Color(0xFF0D47A1), // deep royal blue
               brightness: Brightness.light,
             ),
-            scaffoldBackgroundColor: const Color(0xFFFAFBFF),
+            scaffoldBackgroundColor: const Color(0xFFF7F9FC),
             appBarTheme: const AppBarTheme(
               centerTitle: true,
               elevation: 0,
               scrolledUnderElevation: 0,
-              backgroundColor: Color(0xFFFAFBFF),
-              foregroundColor: Color(0xFF121212),
+              backgroundColor: Color(0xFFF7F9FC),
+              foregroundColor: Color(0xFF0B0B0B),
             ),
             cardTheme: CardThemeData(
               elevation: 0,
-              color: const Color(0xFFFFFFFF),
+              color: Colors.white,
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
+            listTileTheme: const ListTileThemeData(
+              iconColor: Color(0xFF0D47A1),
+              textColor: Color(0xFF121212),
+            ),
             navigationBarTheme: NavigationBarThemeData(
               elevation: 0,
               height: 70,
-              backgroundColor: const Color(0xFFF1F4FA),
-              indicatorColor: const Color(0xFF1F4E79).withValues(alpha: 0.14),
+              backgroundColor: const Color(0xFFE8EEF7),
+              indicatorColor: const Color(0xFF0D47A1).withValues(alpha: 0.18),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
                   return const IconThemeData(
                     size: 26,
-                    color: Color(0xFF1F4E79),
+                    color: Color(0xFF0D47A1),
                   );
                 }
                 return const IconThemeData(
                   size: 24,
-                  color: Color(0xFF6E6E6E),
+                  color: Color(0xFF444444),
                 );
               }),
             ),
           ),
 
-          // ✅ DARK THEME — Blue Navy Hymnal
+          // ✅ DARK THEME — High Contrast Navy
           darkTheme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF4A90E2),
+              seedColor: const Color(0xFF1565C0),
               brightness: Brightness.dark,
             ),
-
-            scaffoldBackgroundColor: const Color(0xFF0F172A), // deep navy
-
+            scaffoldBackgroundColor: const Color(0xFF0A192F),
             appBarTheme: const AppBarTheme(
               centerTitle: true,
               elevation: 0,
               scrolledUnderElevation: 0,
-              backgroundColor: Color(0xFF0F172A),
+              backgroundColor: Color(0xFF0A192F),
               foregroundColor: Colors.white,
             ),
-
             cardTheme: CardThemeData(
               elevation: 0,
-              color: const Color(0xFF1E293B),
+              color: const Color(0xFF112240),
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
-
+            listTileTheme: const ListTileThemeData(
+              iconColor: Color(0xFF64B5F6),
+              textColor: Colors.white,
+            ),
             navigationBarTheme: NavigationBarThemeData(
               elevation: 0,
               height: 72,
-              backgroundColor: const Color(0xFF0F172A),
-              indicatorColor: const Color(0xFF4A90E2).withValues(alpha: 0.22),
+              backgroundColor: const Color(0xFF0A192F),
+              indicatorColor: const Color(0xFF1565C0).withValues(alpha: 0.30),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
                   return const IconThemeData(
