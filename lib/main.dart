@@ -410,134 +410,92 @@ class SdaLusogaHymnalApp extends StatelessWidget {
           themeMode: settings.themeMode,
 
           // ✅ LIGHT THEME
+          // ✅ LIGHT THEME — Blue Hymnal
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF1E7A3E),
+              seedColor: const Color(0xFF1F4E79), // church blue
               brightness: Brightness.light,
             ),
-            scaffoldBackgroundColor: Colors.white,
-            textTheme: const TextTheme(
-              titleLarge: TextStyle(fontWeight: FontWeight.w800),
-              titleMedium: TextStyle(fontWeight: FontWeight.w700),
-              bodyLarge: TextStyle(fontWeight: FontWeight.w500),
-              bodyMedium: TextStyle(fontWeight: FontWeight.w500),
-            ),
+            scaffoldBackgroundColor: const Color(0xFFFAFBFF),
             appBarTheme: const AppBarTheme(
               centerTitle: true,
               elevation: 0,
               scrolledUnderElevation: 0,
-              backgroundColor: Color(0xFFF6F6F2),
+              backgroundColor: Color(0xFFFAFBFF),
               foregroundColor: Color(0xFF121212),
-              titleTextStyle: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF121212),
-                letterSpacing: 0.2,
-              ),
-            ),
-            dividerTheme: DividerThemeData(
-              thickness: 1,
-              space: 1,
-              color: Colors.black.withValues(alpha: 0.08),
             ),
             cardTheme: CardThemeData(
               elevation: 0,
-              color: Colors.white.withValues(alpha: 0.85),
+              color: const Color(0xFFFFFFFF),
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
               ),
-            ),
-            listTileTheme: ListTileThemeData(
-              iconColor: const Color(0xFF1E7A3E),
-              textColor: const Color(0xFF121212),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              filled: true,
-              fillColor: Colors.white.withValues(alpha: 0.75),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide:
-                    BorderSide(color: Colors.black.withValues(alpha: 0.08)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide:
-                    const BorderSide(color: Color(0xFF1E7A3E), width: 1.2),
-              ),
-              hintStyle: TextStyle(color: Colors.black.withValues(alpha: 0.45)),
             ),
             navigationBarTheme: NavigationBarThemeData(
               elevation: 0,
               height: 70,
-              backgroundColor: const Color.fromARGB(255, 155, 155, 152),
-              indicatorColor:
-                  const Color.fromARGB(255, 23, 92, 47).withValues(alpha: 0.14),
-              labelTextStyle: const WidgetStatePropertyAll(
-                TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
-              ),
+              backgroundColor: const Color(0xFFF1F4FA),
+              indicatorColor: const Color(0xFF1F4E79).withValues(alpha: 0.14),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
                   return const IconThemeData(
-                      size: 26, color: Color(0xFF1E7A3E));
+                    size: 26,
+                    color: Color(0xFF1F4E79),
+                  );
                 }
-                return IconThemeData(
-                    size: 24, color: Colors.black.withValues(alpha: 0.45));
+                return const IconThemeData(
+                  size: 24,
+                  color: Color(0xFF6E6E6E),
+                );
               }),
             ),
           ),
 
-          // ✅ DARK THEME
+          // ✅ DARK THEME — Blue Navy Hymnal
           darkTheme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF1E7A3E),
+              seedColor: const Color(0xFF4A90E2),
               brightness: Brightness.dark,
             ),
-            scaffoldBackgroundColor: const Color(0xFF0F1111),
+
+            scaffoldBackgroundColor: const Color(0xFF0F172A), // deep navy
+
             appBarTheme: const AppBarTheme(
               centerTitle: true,
               elevation: 0,
               scrolledUnderElevation: 0,
-              backgroundColor: Color.fromARGB(255, 5, 5, 5),
-              foregroundColor: Color.fromARGB(255, 182, 179, 179),
-              titleTextStyle: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: Colors.white,
-              ),
+              backgroundColor: Color(0xFF0F172A),
+              foregroundColor: Colors.white,
             ),
+
             cardTheme: CardThemeData(
               elevation: 0,
-              color: Colors.white.withValues(alpha: 0.06),
+              color: const Color(0xFF1E293B),
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
+
             navigationBarTheme: NavigationBarThemeData(
               elevation: 0,
               height: 72,
-              backgroundColor: const Color.fromARGB(255, 5, 5, 5),
-              indicatorColor: const Color(0xFF1E7A3E).withValues(alpha: 0.22),
-              labelTextStyle: const WidgetStatePropertyAll(
-                TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
-              ),
+              backgroundColor: const Color(0xFF0F172A),
+              indicatorColor: const Color(0xFF4A90E2).withValues(alpha: 0.22),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
                   return const IconThemeData(
-                      size: 26, color: Color(0xFF45D07B));
+                    size: 26,
+                    color: Color(0xFF90CAF9),
+                  );
                 }
-                return const IconThemeData(size: 24, color: Colors.white70);
+                return const IconThemeData(
+                  size: 24,
+                  color: Colors.white70,
+                );
               }),
             ),
           ),
@@ -1592,12 +1550,12 @@ class _PremiumHeaderCard extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: 15),
 
               // RIGHT ✅ FIXED: do NOT clamp to 60..100 (that crushes it)
               ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: (w * 0.42).clamp(80.0, 100.0),
+                  maxWidth: (w * 0.42).clamp(70.0, 90.0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
