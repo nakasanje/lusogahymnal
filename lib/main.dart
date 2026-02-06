@@ -1266,8 +1266,6 @@ class SongDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
     final headerRef = _bestReferenceLine(song);
     final rightInfo = _bestRightInfo(song.meta);
 
@@ -1299,23 +1297,20 @@ class SongDetails extends StatelessWidget {
       );
     }
 
-    // ✅ Responsive pinned header height (header ABOVE buttons)
-    final ts = MediaQuery.textScaleFactorOf(context);
+    // ✅ Responsive pinned header height (header on top, buttons just below)
+    final ts = MediaQuery.textScalerOf(context).scale(1);
+
     final w = MediaQuery.sizeOf(context).width;
     final isTight = w < 360;
 
-    // Header card height adapts with text scale
-    final headerCardH = (132 + ((ts - 1) * 34)).clamp(132.0, 180.0);
-
-    // Buttons live under header; allow 2-line layout on tight screens
-    final buttonsH = isTight ? 92.0 : 56.0;
-
-    final headerHeight = (headerCardH + 10 + buttonsH).clamp(196.0, 292.0);
+    final controlsH = isTight ? 92.0 : 56.0;
+    final headerCardH = (128 + ((ts - 1) * 34)).clamp(128.0, 176.0);
+    final headerHeight = headerCardH + controlsH - 17;
 
     const maxPageWidth = 920.0;
 
     return Scaffold(
-      backgroundColor: Colors.white, // ✅ white background
+      backgroundColor: Colors.white, // ✅ page background white
       body: SafeArea(
         bottom: false,
         child: Scrollbar(
@@ -1326,7 +1321,7 @@ class SongDetails extends StatelessWidget {
                 pinned: true,
                 delegate: PinnedHeaderDelegate(
                   height: headerHeight,
-                  child: _PinnedHeaderWithButtonsBelow(
+                  child: _PremiumPinnedHeaderBest(
                     song: song,
                     headerRef: headerRef,
                     rightInfo: rightInfo,
@@ -1339,13 +1334,13 @@ class SongDetails extends StatelessWidget {
                 ),
               ),
 
-              // ✅ Lyrics NOT in a card; just clean padding
+              // ✅ Lyrics NOT in a card (just clean padding on white)
               SliverToBoxAdapter(
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: maxPageWidth),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 28),
+                      padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: buildLyricsView(context, song.lyrics),
                     ),
                   ),
@@ -1383,8 +1378,7 @@ class SongDetails extends StatelessWidget {
   }
 }
 
-/// ✅ Sticky header area: Header Card on top, Buttons row UNDER it
-class _PinnedHeaderWithButtonsBelow extends StatelessWidget {
+class _PremiumPinnedHeaderBest extends StatelessWidget {
   final Song song;
   final String headerRef;
   final _RightInfo rightInfo;
@@ -1394,7 +1388,7 @@ class _PinnedHeaderWithButtonsBelow extends StatelessWidget {
   final VoidCallback onNext;
   final double maxWidth;
 
-  const _PinnedHeaderWithButtonsBelow({
+  const _PremiumPinnedHeaderBest({
     required this.song,
     required this.headerRef,
     required this.rightInfo,
@@ -1408,17 +1402,23 @@ class _PinnedHeaderWithButtonsBelow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white, // ✅ white sticky background
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+      color: Colors.white, // ✅ pinned header background white
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+
       child: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
             children: [
+              // ✅ Header FIRST (top)
               _PremiumHeaderCard(
-                  song: song, headerRef: headerRef, rightInfo: rightInfo),
-              const SizedBox(height: 10),
-              _ButtonsRowResponsive(
+                song: song,
+                headerRef: headerRef,
+                rightInfo: rightInfo,
+              ),
+
+              // ✅ Buttons immediately below (no SizedBox spacing)
+              _TopControlsBar(
                 song: song,
                 canPrev: canPrev,
                 canNext: canNext,
@@ -1433,15 +1433,15 @@ class _PinnedHeaderWithButtonsBelow extends StatelessWidget {
   }
 }
 
-/// ✅ Buttons row (under sticky header card). Responsive, no overflow.
-class _ButtonsRowResponsive extends StatelessWidget {
+/// ✅ Controls bar (responsive)
+class _TopControlsBar extends StatelessWidget {
   final Song song;
   final bool canPrev;
   final bool canNext;
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
-  const _ButtonsRowResponsive({
+  const _TopControlsBar({
     required this.song,
     required this.canPrev,
     required this.canNext,
@@ -1453,7 +1453,8 @@ class _ButtonsRowResponsive extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, c) {
-        final isTight = c.maxWidth < 360;
+        // ✅ iPhone Safari looks cleaner if we go compact a bit earlier
+        final isTight = c.maxWidth < 430;
 
         if (isTight) {
           return Column(
@@ -1475,7 +1476,6 @@ class _ButtonsRowResponsive extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
               Center(child: _HeaderActionsCompact(song: song)),
             ],
           );
@@ -1522,129 +1522,122 @@ class _PremiumHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            // ✅ still premium but on white background
-            color: scheme.surfaceContainerHighest.withValues(alpha: 0.55),
-            border: Border.all(
-                color: scheme.outlineVariant.withValues(alpha: 0.25)),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 16,
-                offset: const Offset(0, 8),
-                color: Colors.black.withValues(alpha: 0.08),
-              ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest, // solid color now
+        border: Border.all(
+          color: scheme.outlineVariant.withValues(alpha: 0.28),
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+            color: Colors.black.withValues(alpha: 0.08),
           ),
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-          child: LayoutBuilder(
-            builder: (context, c) {
-              final w = c.maxWidth;
-              final titleSize = (w * 0.030).clamp(14.5, 18.0);
-              final refSize = (w * 0.020).clamp(10.0, 12.0);
-              final dohSize = (w * 0.028).clamp(12.0, 15.0);
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final w = c.maxWidth;
+          final titleSize = (w * 0.030).clamp(14.5, 18.0);
+          final refSize = (w * 0.020).clamp(10.0, 12.0);
+          final dohSize = (w * 0.028).clamp(12.0, 15.0);
 
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${song.number}  ${song.title}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontSize: titleSize,
-                                    fontWeight: FontWeight.w900,
-                                    height: 1.05,
-                                    letterSpacing: 0.1,
-                                  ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.bookmark_outline,
-                              size: (refSize + 6).clamp(14.0, 18.0),
-                              color: scheme.onSurface.withValues(alpha: 0.55),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: Text(
-                                headerRef,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      fontSize: refSize,
-                                      color: scheme.onSurface
-                                          .withValues(alpha: 0.72),
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: (w * 0.34).clamp(140.0, 210.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        _RightRow(
-                            left: rightInfo.topLeft, right: rightInfo.topRight),
-                        const SizedBox(height: 2),
-                        _RightRow(
-                            left: rightInfo.midLeft, right: rightInfo.midRight),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.75),
-                            borderRadius: BorderRadius.circular(999),
-                            border: Border.all(
-                              color:
-                                  scheme.outlineVariant.withValues(alpha: 0.22),
-                            ),
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // LEFT
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${song.number}  ${song.title}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontSize: titleSize,
+                            fontWeight: FontWeight.w900,
+                            height: 1.05,
+                            letterSpacing: 0.1,
                           ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.bookmark_outline,
+                          size: (refSize + 6).clamp(14.0, 18.0),
+                          color: scheme.onSurface.withValues(alpha: 0.55),
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
                           child: Text(
-                            rightInfo.bottom ?? 'Doh is —',
+                            headerRef,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyMedium
+                                .bodySmall
                                 ?.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: dohSize,
+                                  fontSize: refSize,
                                   color:
-                                      scheme.onSurface.withValues(alpha: 0.88),
+                                      scheme.onSurface.withValues(alpha: 0.72),
                                 ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(width: 8), // ✅ slightly tighter
+
+              // RIGHT (wider so meter/tune/author/by extend more)
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: (w * 0.42).clamp(60.0, 100.0), // ✅ wider
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _RightRow(
+                        left: rightInfo.topLeft, right: rightInfo.topRight),
+                    const SizedBox(height: 2),
+                    _RightRow(
+                        left: rightInfo.midLeft, right: rightInfo.midRight),
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: scheme.surfaceContainerLowest
+                            .withValues(alpha: 0.75),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color: scheme.outlineVariant.withValues(alpha: 0.25),
+                        ),
+                      ),
+                      child: Text(
+                        rightInfo.bottom ?? 'Doh is —',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w900,
+                              fontSize: dohSize,
+                              color: scheme.onSurface.withValues(alpha: 0.88),
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -1670,7 +1663,7 @@ class _NavCircle extends StatelessWidget {
     return Tooltip(
       message: tooltip,
       child: Material(
-        color: Colors.white,
+        color: scheme.surfaceContainerLowest.withValues(alpha: 0.70),
         shape: const CircleBorder(),
         child: InkWell(
           customBorder: const CircleBorder(),
@@ -1710,6 +1703,7 @@ class _RightInfo {
   });
 }
 
+/// Right-side row
 class _RightRow extends StatelessWidget {
   final String? left;
   final String? right;
@@ -1734,7 +1728,7 @@ class _RightRow extends StatelessWidget {
         );
 
     return Row(
-      mainAxisSize: MainAxisSize.max, // ✅ take available width
+      mainAxisSize: MainAxisSize.max,
       children: [
         // LEFT small column (meter/tune)
         Flexible(
@@ -1765,6 +1759,7 @@ class _RightRow extends StatelessWidget {
   }
 }
 
+/// ✅ BEST: smaller icon + label chips (cleaner on iPhone)
 class _HeaderActionsBest extends StatelessWidget {
   final Song song;
   const _HeaderActionsBest({required this.song});
@@ -1796,18 +1791,21 @@ class _HeaderActionsBest extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(999),
               border: Border.all(
-                  color: scheme.outlineVariant.withValues(alpha: 0.22)),
+                color: scheme.outlineVariant.withValues(alpha: 0.22),
+              ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 7, vertical: 7), // ✅ smaller
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 18, color: accent),
-                const SizedBox(width: 8),
+                Icon(icon, size: 16, color: accent), // ✅ smaller icon
+                const SizedBox(width: 6), // ✅ tighter
                 Text(
                   label,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w800,
+                        fontSize: 12, // ✅ consistent small
                         color: scheme.onSurface.withValues(alpha: 0.86),
                       ),
                 ),
@@ -1819,8 +1817,8 @@ class _HeaderActionsBest extends StatelessWidget {
     }
 
     return Wrap(
-      spacing: 10,
-      runSpacing: 8,
+      spacing: 6, // ✅ tighter
+      runSpacing: 4, // ✅ tighter
       alignment: WrapAlignment.center,
       children: [
         AnimatedBuilder(
@@ -1828,7 +1826,7 @@ class _HeaderActionsBest extends StatelessWidget {
           builder: (_, __) {
             final isFav = favorites.isFav(song.number);
             return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 1.0, end: isFav ? 1.08 : 1.0),
+              tween: Tween(begin: 1.0, end: isFav ? 1.06 : 1.0),
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeOut,
               builder: (context, scale, child) =>
@@ -1869,6 +1867,7 @@ class _HeaderActionsBest extends StatelessWidget {
   }
 }
 
+/// ✅ COMPACT: icon-only (very small screens)
 class _HeaderActionsCompact extends StatelessWidget {
   final Song song;
   const _HeaderActionsCompact({required this.song});
@@ -1885,10 +1884,11 @@ class _HeaderActionsCompact extends StatelessWidget {
       return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
     }
 
-    Widget pill(
-        {required IconData icon,
-        required VoidCallback onTap,
-        required String tooltip}) {
+    Widget pill({
+      required IconData icon,
+      required VoidCallback onTap,
+      required String tooltip,
+    }) {
       return Tooltip(
         message: tooltip,
         child: Material(
@@ -1901,10 +1901,12 @@ class _HeaderActionsCompact extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(
-                    color: scheme.outlineVariant.withValues(alpha: 0.22)),
+                  color: scheme.outlineVariant.withValues(alpha: 0.22),
+                ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Icon(icon, size: 18, color: accent),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 10, vertical: 8), // ✅ smaller
+              child: Icon(icon, size: 16, color: accent), // ✅ smaller
             ),
           ),
         ),
@@ -1912,8 +1914,8 @@ class _HeaderActionsCompact extends StatelessWidget {
     }
 
     return Wrap(
-      spacing: 10,
-      runSpacing: 8,
+      spacing: 6,
+      runSpacing: 4,
       alignment: WrapAlignment.center,
       children: [
         AnimatedBuilder(
@@ -1921,7 +1923,7 @@ class _HeaderActionsCompact extends StatelessWidget {
           builder: (_, __) {
             final isFav = favorites.isFav(song.number);
             return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 1.0, end: isFav ? 1.10 : 1.0),
+              tween: Tween(begin: 1.0, end: isFav ? 1.08 : 1.0),
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeOut,
               builder: (context, scale, child) =>
