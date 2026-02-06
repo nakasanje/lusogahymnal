@@ -1304,7 +1304,7 @@ class SongDetails extends StatelessWidget {
     final isTight = w < 360;
 
     final controlsH = isTight ? 92.0 : 56.0;
-    final headerCardH = (128 + ((ts - 1) * 34)).clamp(128.0, 176.0);
+    final headerCardH = (128 + ((ts - 1) * 34)).clamp(130.0, 176.0);
     final headerHeight = headerCardH + controlsH - 17;
 
     const maxPageWidth = 920.0;
@@ -1409,6 +1409,7 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: maxWidth),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               // ✅ Header FIRST (top)
               _PremiumHeaderCard(
@@ -1541,8 +1542,8 @@ class _PremiumHeaderCard extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, c) {
           final w = c.maxWidth;
-          final titleSize = (w * 0.030).clamp(14.5, 18.0);
-          final refSize = (w * 0.020).clamp(10.0, 12.0);
+          final titleSize = (w * 0.030).clamp(15.5, 18.0);
+          final refSize = (w * 0.024).clamp(11.0, 13.0);
           final dohSize = (w * 0.028).clamp(12.0, 15.0);
 
           return Row(
@@ -1799,7 +1800,7 @@ class _HeaderActionsBest extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 16, color: accent), // ✅ smaller icon
+                Icon(icon, size: 15, color: accent), // ✅ smaller icon
                 const SizedBox(width: 6), // ✅ tighter
                 Text(
                   label,
