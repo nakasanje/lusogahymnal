@@ -1615,7 +1615,7 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
 
     // Floating “header card” look
     final cardColor = scheme.surface;
-    final cardShadow = Colors.black.withValues(alpha: isDark ? 0.30 : 0.18);
+    final cardShadow = Colors.black.withValues(alpha: isDark ? 0.50 : 0.18);
 
     return Container(
       color: bg,
@@ -1701,7 +1701,7 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
 
     final rightStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w900,
-          fontSize: 15,
+          fontSize: 10,
           height: 1.05,
           color: scheme.onSurface,
         );
@@ -1709,7 +1709,7 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, c) {
         final w = c.maxWidth;
-        final rightW = (w * 0.40).clamp(140.0, 230.0);
+        final rightW = (w * 0.40).clamp(80.0, 150.0);
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1759,7 +1759,7 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
                     _clean(rightInfo.bottom),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: rightStyle?.copyWith(fontSize: 16),
+                    style: rightStyle?.copyWith(fontSize: 11),
                   ),
                 ],
               ),
@@ -1864,8 +1864,8 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
 
     // Screenshot buttons: dark navy
     final btn = isDark
-        ? const Color.fromARGB(255, 44, 82, 175)
-        : const Color.fromARGB(255, 22, 66, 175);
+        ? const Color.fromARGB(255, 75, 116, 218)
+        : const Color.fromARGB(255, 75, 116, 218);
 
     String shareText(Song s) {
       final header = '${s.number}. ${s.title}';
@@ -1883,7 +1883,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         onTap: onTap,
         child: Container(
-          height: 34,
+          height: 30,
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: btn,
@@ -1900,7 +1900,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 18, color: Colors.white),
+                Icon(icon, size: 16, color: Colors.white),
                 const SizedBox(width: 8),
               ],
               Text(
@@ -1923,8 +1923,8 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
         final isFav = favorites.isFav(song.number);
 
         return Wrap(
-          spacing: 8,
-          runSpacing: 6,
+          spacing: 3,
+          runSpacing: 2,
           alignment: WrapAlignment.center,
           children: [
             pill(
@@ -1942,7 +1942,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
                     SnackBar(
                       content: const Text('Copied!'),
                       behavior: SnackBarBehavior.floating,
-                      width: 220,
+                      width: 20,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -1989,14 +1989,14 @@ class _NavSquare extends StatelessWidget {
         duration: const Duration(milliseconds: 160),
         opacity: enabled ? 1 : 0.45,
         child: Container(
-          padding: const EdgeInsets.all(9), // ✅ compact
+          padding: const EdgeInsets.all(8), // ✅ compact
           decoration: BoxDecoration(
             color: fill,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
             icon,
-            size: 18,
+            size: 15,
             color: enabled
                 ? scheme.primary.withValues(alpha: 0.92)
                 : scheme.onSurface.withValues(alpha: 0.35),
@@ -2163,24 +2163,20 @@ Widget buildLyricsView(BuildContext context, String raw) {
               const SizedBox(height: 5),
 
               // ✅ chorus block: slight indent + subtle left rail
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 21), // ✅ same as verse number width
-                child: _StanzaView(
-                  text: b.text,
-                  style: baseStyle?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: lyricsColor.withValues(alpha: 0.96),
-                    // optional hymnal feel
-                  ),
-                  showVerseNumber: false,
+              // ✅ same as verse number width
+              _StanzaView(
+                text: b.text,
+                style: baseStyle?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: lyricsColor.withValues(alpha: 0.96),
+                  // optional hymnal feel
                 ),
+                showVerseNumber: false,
               ),
             ] else ...[
               _StanzaView(text: b.text, style: baseStyle),
             ],
-
-            const SizedBox(height: 20), // ✅ tighter + consistent spacing
+            const SizedBox(height: 25),
           ],
         ],
       );
@@ -2210,7 +2206,7 @@ class _StanzaView extends StatelessWidget {
     final firstLine = rawLines.first.trim();
     final match = RegExp(r'^(\d+)[\.\)]\s*(.*)').firstMatch(firstLine);
 
-    // Not a numbered stanza
+    // Not a numbered stanza OR numbering disabled
     if (match == null || !showVerseNumber) {
       return Text(
         text,
@@ -2222,37 +2218,28 @@ class _StanzaView extends StatelessWidget {
     final firstText = (match.group(2) ?? '').trim();
     final rest = rawLines.skip(1).join('\n').trim();
 
-    final verseColor = scheme.primary.withValues(alpha: isDark ? 0.85 : 0.78);
+    final verseColor = scheme.primary.withValues(alpha: isDark ? 0.78 : 0.72);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ✅ verse number on the left (hymnal style)
-        SizedBox(
-          width: 26,
-          child: Text(
-            '$number.',
-            textAlign: TextAlign.right,
+    // ✅ Build ONE rich text block so number is inline with first line
+    return RichText(
+      text: TextSpan(
+        style: style?.copyWith(height: settings.lineHeight),
+        children: [
+          TextSpan(
+            text: '$number. ',
             style: style?.copyWith(
               fontWeight: FontWeight.w900,
               color: verseColor,
-              height: settings.lineHeight,
             ),
           ),
-        ),
-
-        const SizedBox(width: 5),
-        // ✅ stanza text
-        Expanded(
-          child: Text(
-            [
+          TextSpan(
+            text: [
               if (firstText.isNotEmpty) firstText,
-              if (rest.isNotEmpty) rest,
-            ].join('\n'),
-            style: style?.copyWith(height: settings.lineHeight),
+              if (rest.isNotEmpty) '\n$rest',
+            ].join(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
