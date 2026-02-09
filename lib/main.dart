@@ -396,6 +396,289 @@ class FavoritesStore extends ChangeNotifier {
 
 final FavoritesStore favorites = FavoritesStore();
 
+//
+ThemeData hymnalLightTheme() {
+  const primary = Color(0xFF1F3C88);
+  const secondary = Color(0xFF3F6AE1);
+
+  // Soft “premium” whites (still looks white, but not harsh)
+  const surface = Color(0xFFFFFFFF);
+  const scaffold = Color(0xFFFFFFFF);
+  const softFill = Color(0xFFF5F7FF); // used for inputs / subtle surfaces
+
+  final cs = ColorScheme.fromSeed(
+    seedColor: primary,
+    brightness: Brightness.light,
+    primary: primary,
+    secondary: secondary,
+    surface: surface,
+  ).copyWith(
+    onPrimary: Colors.white,
+    onSecondary: Colors.white,
+    onSurface: const Color(0xFF121212),
+    error: Colors.red,
+    onError: Colors.white,
+    // M3 “container” color used by some widgets
+    surfaceContainerHighest: softFill,
+    outline: const Color(0x00000000),
+  );
+
+  return ThemeData(
+    useMaterial3: true,
+    colorScheme: cs,
+    scaffoldBackgroundColor: scaffold,
+
+    // ✅ absolutely NO divider lines anywhere
+    dividerTheme: const DividerThemeData(
+      thickness: 0,
+      space: 0,
+      color: Colors.transparent,
+    ),
+
+    // Type
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(fontWeight: FontWeight.w800),
+      titleMedium: TextStyle(fontWeight: FontWeight.w700),
+      bodyLarge: TextStyle(fontWeight: FontWeight.w500),
+      bodyMedium: TextStyle(fontWeight: FontWeight.w500),
+    ).apply(
+      bodyColor: cs.onSurface,
+      displayColor: cs.onSurface,
+    ),
+
+    appBarTheme: const AppBarTheme(
+      centerTitle: true,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      backgroundColor: scaffold,
+      foregroundColor: primary,
+      titleTextStyle: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        color: primary,
+      ),
+    ),
+
+    // ✅ subtle surfaces, no borders
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+    ),
+
+    listTileTheme: ListTileThemeData(
+      iconColor: primary,
+      textColor: cs.onSurface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+    ),
+
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: softFill,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0x00000000)), // ✅ no border
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: primary, width: 1.4),
+      ),
+      hintStyle: const TextStyle(color: Color(0xFF6B7280)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+    ),
+
+    // Buttons feel “premium”
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        ),
+        textStyle: const WidgetStatePropertyAll(
+          TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        elevation: const WidgetStatePropertyAll(0),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        ),
+        textStyle: const WidgetStatePropertyAll(
+          TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
+    ),
+
+    navigationBarTheme: NavigationBarThemeData(
+      elevation: 0,
+      height: 72,
+      backgroundColor: scaffold,
+      indicatorColor: primary.withValues(alpha: 0.12),
+      labelTextStyle: const WidgetStatePropertyAll(
+        TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+      ),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const IconThemeData(size: 25, color: primary);
+        }
+        return const IconThemeData(size: 23, color: Color(0xFF6B7280));
+      }),
+    ),
+  );
+}
+
+ThemeData hymnalDarkTheme() {
+  const primary = Color(0xFF90CAF9);
+  const secondary = Color(0xFF4FA3FF);
+
+  const scaffold = Color(0xFF0B1220); // deep navy
+  const surface = Color(0xFF0B1220);
+  const panel = Color(0xFF101A2E); // cards / inputs / controls
+
+  final cs = ColorScheme.fromSeed(
+    seedColor: primary,
+    brightness: Brightness.dark,
+    primary: primary,
+    secondary: secondary,
+    surface: surface,
+  ).copyWith(
+    onPrimary: const Color(0xFF0B1220),
+    onSecondary: const Color(0xFF06101F),
+    onSurface: const Color(0xFFEAF0FF),
+    error: const Color(0xFFFF6B6B),
+    onError: const Color(0xFF1A0B0B),
+    surfaceContainerHighest: panel,
+    outline: const Color(0x00000000),
+  );
+
+  return ThemeData(
+    useMaterial3: true,
+    colorScheme: cs,
+    scaffoldBackgroundColor: scaffold,
+
+    // ✅ NO divider lines anywhere
+    dividerTheme: const DividerThemeData(
+      thickness: 0,
+      space: 0,
+      color: Colors.transparent,
+    ),
+
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(fontWeight: FontWeight.w800),
+      titleMedium: TextStyle(fontWeight: FontWeight.w700),
+      bodyLarge: TextStyle(fontWeight: FontWeight.w500),
+      bodyMedium: TextStyle(fontWeight: FontWeight.w500),
+    ).apply(
+      bodyColor: cs.onSurface,
+      displayColor: cs.onSurface,
+    ),
+
+    appBarTheme: const AppBarTheme(
+      centerTitle: true,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      backgroundColor: scaffold,
+      foregroundColor: Color(0xFFEAF0FF),
+      titleTextStyle: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        color: Color(0xFFEAF0FF),
+      ),
+    ),
+
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: panel,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+    ),
+
+    listTileTheme: ListTileThemeData(
+      iconColor: primary,
+      textColor: cs.onSurface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+    ),
+
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: panel,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: Color(0x00000000)), // ✅ no border
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: primary, width: 1.4),
+      ),
+      hintStyle: const TextStyle(color: Color(0xFF96A4C3)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+    ),
+
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        ),
+        textStyle: const WidgetStatePropertyAll(
+          TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        elevation: const WidgetStatePropertyAll(0),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        ),
+        textStyle: const WidgetStatePropertyAll(
+          TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
+    ),
+
+    navigationBarTheme: NavigationBarThemeData(
+      elevation: 0,
+      height: 72,
+      backgroundColor: scaffold,
+      indicatorColor: primary.withValues(alpha: 0.18),
+      labelTextStyle: const WidgetStatePropertyAll(
+        TextStyle(fontWeight: FontWeight.w800, fontSize: 12),
+      ),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const IconThemeData(size: 25, color: primary);
+        }
+        return const IconThemeData(size: 23, color: Color(0xFF96A4C3));
+      }),
+    ),
+  );
+}
+
+//
 class SdaLusogaHymnalApp extends StatelessWidget {
   const SdaLusogaHymnalApp({super.key});
 
@@ -408,172 +691,8 @@ class SdaLusogaHymnalApp extends StatelessWidget {
           title: 'SDA Lusoga Hymnal',
           debugShowCheckedModeBanner: false,
           themeMode: settings.themeMode,
-
-          // ✅ LIGHT THEME
-          // ✅ LIGHT THEME — White & Blue Hymnal
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme(
-              brightness: Brightness.light,
-
-              primary: const Color(0xFF1F3C88), // deep hymnal blue
-              onPrimary: Colors.white,
-
-              secondary: const Color(0xFF3F6AE1),
-              onSecondary: Colors.white,
-
-              background: Colors.white,
-              onBackground: const Color(0xFF121212),
-
-              surface: Colors.white,
-              onSurface: const Color(0xFF121212),
-
-              error: Colors.red,
-              onError: Colors.white,
-            ),
-            scaffoldBackgroundColor: Colors.white,
-            textTheme: const TextTheme(
-              titleLarge: TextStyle(
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF121212),
-              ),
-              titleMedium: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF121212),
-              ),
-              bodyLarge: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF1A1A1A),
-              ),
-              bodyMedium: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF2C2C2C),
-              ),
-            ),
-            appBarTheme: const AppBarTheme(
-              centerTitle: true,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              backgroundColor: Colors.white,
-              foregroundColor: Color(0xFF1F3C88),
-              titleTextStyle: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF1F3C88),
-              ),
-            ),
-            dividerTheme: DividerThemeData(
-              thickness: 1,
-              space: 1,
-              color: Color(0xFF1F3C88).withValues(alpha: 0.12),
-            ),
-            cardTheme: CardThemeData(
-              elevation: 0,
-              color: Colors.white,
-              surfaceTintColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-            ),
-            listTileTheme: ListTileThemeData(
-              iconColor: const Color(0xFF1F3C88),
-              textColor: const Color(0xFF121212),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            ),
-            inputDecorationTheme: InputDecorationTheme(
-              filled: true,
-              fillColor: const Color(0xFFF5F7FF),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(color: Color(0xFFD6DCF2)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(
-                  color: Color(0xFF1F3C88),
-                  width: 1.4,
-                ),
-              ),
-              hintStyle: const TextStyle(color: Color(0xFF6B7280)),
-            ),
-            navigationBarTheme: NavigationBarThemeData(
-              elevation: 0,
-              height: 70,
-              backgroundColor: Colors.white,
-              indicatorColor: const Color(0xFF1F3C88).withValues(alpha: 0.12),
-              labelTextStyle: const WidgetStatePropertyAll(
-                TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-              ),
-              iconTheme: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return const IconThemeData(
-                    size: 26,
-                    color: Color.fromARGB(255, 40, 78, 173),
-                  );
-                }
-                return const IconThemeData(
-                  size: 24,
-                  color: Color(0xFF6B7280),
-                );
-              }),
-            ),
-          ),
-
-          // ✅ DARK THEME — High Contrast Navy
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF1565C0),
-              brightness: Brightness.dark,
-            ),
-            scaffoldBackgroundColor: const Color(0xFF0A192F),
-            appBarTheme: const AppBarTheme(
-              centerTitle: true,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              backgroundColor: Color(0xFF0A192F),
-              foregroundColor: Colors.white,
-            ),
-            cardTheme: CardThemeData(
-              elevation: 0,
-              color: const Color(0xFF112240),
-              surfaceTintColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-            ),
-            listTileTheme: const ListTileThemeData(
-              iconColor: Color(0xFF64B5F6),
-              textColor: Colors.white,
-            ),
-            navigationBarTheme: NavigationBarThemeData(
-              elevation: 0,
-              height: 72,
-              backgroundColor: const Color(0xFF0A192F),
-              indicatorColor: const Color(0xFF1565C0).withValues(alpha: 0.30),
-              iconTheme: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return const IconThemeData(
-                    size: 26,
-                    color: Color(0xFF90CAF9),
-                  );
-                }
-                return const IconThemeData(
-                  size: 24,
-                  color: Colors.white70,
-                );
-              }),
-            ),
-          ),
-
+          theme: hymnalLightTheme(),
+          darkTheme: hymnalDarkTheme(),
           home: const AppShell(),
         );
       },
@@ -1022,47 +1141,68 @@ class _SongsHomeState extends State<SongsHome> {
           /// SEARCH
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 10, 14, 8),
-              child: Card(
-                elevation: 0,
-                color: scheme.surfaceContainerHighest,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  side: BorderSide(
-                      color: scheme.outlineVariant.withValues(alpha: 0.25)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search,
-                                color: scheme.onSurfaceVariant),
-                            hintText: 'Search hymn',
-                            border: InputBorder.none,
-                            suffixIcon: query.trim().isEmpty
-                                ? null
-                                : IconButton(
-                                    tooltip: 'Clear',
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () => setState(() => query = ''),
-                                  ),
-                          ),
-                          onChanged: (v) => setState(() => query = v),
-                        ),
-                      ),
-                      Text(
-                        '${filtered.length}/${songs.length}',
-                        style: TextStyle(
-                          color: scheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
+              padding: const EdgeInsets.fromLTRB(10, 6, 10, 4),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.18),
+                    width: 1.1,
                   ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.search,
+                        size: 20,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.8)),
+
+                    const SizedBox(width: 8),
+
+                    /// SEARCH INPUT
+                    Expanded(
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          hintText: 'Search hymn',
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        onChanged: (v) => setState(() => query = v),
+                      ),
+                    ),
+
+                    /// COUNTER INSIDE SAME BAR
+                    Text(
+                      '${filtered.length}/${songs.length}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+
+                    if (query.trim().isNotEmpty)
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 18),
+                        onPressed: () => setState(() => query = ''),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -1141,7 +1281,7 @@ class _SongsHomeState extends State<SongsHome> {
                         child: Divider(
                           height: 1,
                           thickness: 1,
-                          color: scheme.outlineVariant.withValues(alpha: 0.65),
+                          color: scheme.outlineVariant.withValues(alpha: 0.10),
                         ),
                       ),
                     ],
@@ -1468,52 +1608,204 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
+
+    // Pinned area = same as page background (like screenshot)
     final bg = Theme.of(context).scaffoldBackgroundColor;
 
-    // ✅ “frosted” pinned header: looks premium in both light + dark
-    final bool isDark = scheme.brightness == Brightness.dark;
-    final overlay = (isDark ? Colors.black : Colors.white)
-        .withValues(alpha: isDark ? 0.10 : 0.55);
+    // Floating “header card” look
+    final cardColor = scheme.surface;
+    final cardShadow = Colors.black.withValues(alpha: isDark ? 0.30 : 0.18);
 
-    return Material(
+    return Container(
       color: bg,
-      child: ClipRect(
-        child: Stack(
-          children: [
-            // subtle blur (very light) to separate header from lyrics when scrolling
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(color: overlay),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: maxWidth),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _PremiumHeaderCard(
-                        song: song,
-                        headerRef: headerRef,
-                        rightInfo: rightInfo,
-                      ),
-                      const SizedBox(height: 6),
-                      _ControlsRow(
-                        song: song,
-                        canPrev: canPrev,
-                        canNext: canNext,
-                        onPrev: onPrev,
-                        onNext: onNext,
-                      ),
-                    ],
-                  ),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ✅ ONE floating card (no divider, no blur)
+              Container(
+                decoration: BoxDecoration(
+                  color: cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 18,
+                      offset: const Offset(0, 8),
+                      color: cardShadow,
+                    ),
+                  ],
                 ),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                child: _HeaderCardLikeScreenshot(
+                  song: song,
+                  headerRef: headerRef,
+                  rightInfo: rightInfo,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // ✅ Row: Prev | (dark buttons) | Next  (reuses your previous buttons)
+              _ControlsRow(
+                song: song,
+                canPrev: canPrev,
+                canNext: canNext,
+                onPrev: onPrev,
+                onNext: onNext,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HeaderCardLikeScreenshot extends StatelessWidget {
+  final Song song;
+  final String headerRef;
+  final _RightInfo rightInfo;
+
+  const _HeaderCardLikeScreenshot({
+    required this.song,
+    required this.headerRef,
+    required this.rightInfo,
+  });
+
+  String _clean(String? v) {
+    final t = (v ?? '').trim();
+    return t.isEmpty ? '—' : t;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w900,
+          fontSize: 15,
+          height: 1.05,
+          color: scheme.onSurface,
+        );
+
+    final refStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
+          fontWeight: FontWeight.w700,
+          fontSize: 11,
+          height: 1.2,
+          color: scheme.onSurface.withValues(alpha: 0.70),
+        );
+
+    final rightStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w900,
+          fontSize: 15,
+          height: 1.05,
+          color: scheme.onSurface,
+        );
+
+    return LayoutBuilder(
+      builder: (context, c) {
+        final w = c.maxWidth;
+        final rightW = (w * 0.40).clamp(140.0, 230.0);
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // LEFT: number + title + ref
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${song.number}    ${song.title}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: titleStyle,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    headerRef,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: refStyle,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+
+            // RIGHT: two rows + Doh line (like screenshot)
+            SizedBox(
+              width: rightW,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _RightPairRow(
+                    left: _clean(rightInfo.topLeft),
+                    right: _clean(rightInfo.topRight),
+                    style: rightStyle,
+                  ),
+                  const SizedBox(height: 2),
+                  _RightPairRow(
+                    left: _clean(rightInfo.midLeft),
+                    right: _clean(rightInfo.midRight),
+                    style: rightStyle,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _clean(rightInfo.bottom),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: rightStyle?.copyWith(fontSize: 16),
+                  ),
+                ],
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+}
+
+class _RightPairRow extends StatelessWidget {
+  final String left;
+  final String right;
+  final TextStyle? style;
+
+  const _RightPairRow({
+    required this.left,
+    required this.right,
+    required this.style,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            left,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.right,
+            style: style,
+          ),
         ),
-      ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            right,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.left,
+            style: style,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -1538,19 +1830,22 @@ class _ControlsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _NavCircle(
+        // ✅ your existing prev button
+        _NavSquare(
           enabled: canPrev,
-          tooltip: 'Previous',
-          icon: Icons.chevron_left,
+          icon: Icons.arrow_back_ios_new_rounded,
           onTap: onPrev,
         ),
-        const SizedBox(width: 8),
-        Expanded(child: Center(child: _HeaderActionsBest(song: song))),
-        const SizedBox(width: 8),
-        _NavCircle(
+        const SizedBox(width: 10),
+
+        // ✅ screenshot-style dark buttons in the middle
+        Expanded(child: _HeaderActionsScreenshotStyle(song: song)),
+
+        const SizedBox(width: 10),
+        // ✅ your existing next button
+        _NavSquare(
           enabled: canNext,
-          tooltip: 'Next',
-          icon: Icons.chevron_right,
+          icon: Icons.arrow_forward_ios_rounded,
           onTap: onNext,
         ),
       ],
@@ -1558,145 +1853,123 @@ class _ControlsRow extends StatelessWidget {
   }
 }
 
-class _PremiumHeaderCard extends StatelessWidget {
+class _HeaderActionsScreenshotStyle extends StatelessWidget {
   final Song song;
-  final String headerRef;
-  final _RightInfo rightInfo;
-
-  const _PremiumHeaderCard({
-    required this.song,
-    required this.headerRef,
-    required this.rightInfo,
-  });
+  const _HeaderActionsScreenshotStyle({required this.song});
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
 
-    final bool isDark = scheme.brightness == Brightness.dark;
-    final surface = scheme.surface;
-    final border = scheme.primary.withValues(
-      alpha: isDark ? 0.28 : 0.18,
-    );
+    // Screenshot buttons: dark navy
+    final btn = isDark
+        ? const Color.fromARGB(255, 44, 82, 175)
+        : const Color.fromARGB(255, 22, 66, 175);
 
-    // ✅ shadow tuned per theme (dark shadows should be softer)
-    final shadowColor = (isDark ? Colors.black : Colors.black)
-        .withValues(alpha: isDark ? 0.25 : 0.20);
+    String shareText(Song s) {
+      final header = '${s.number}. ${s.title}';
+      final lyrics =
+          s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
+      return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
+    }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: surface,
-        border: Border.all(color: border),
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: isDark ? 16 : 20,
-            offset: const Offset(0, 10),
-            color: shadowColor,
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      child: LayoutBuilder(
-        builder: (context, c) {
-          final w = c.maxWidth;
-          final titleSize = (w * 0.032).clamp(16.5, 18.0);
-          final refSize = (w * 0.020).clamp(11.0, 13.0);
-          final dohSize = (w * 0.024).clamp(12.0, 15.0);
-
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // LEFT
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${song.number}  ${song.title}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontSize: titleSize,
-                            fontWeight: FontWeight.w900,
-                            height: 1.05,
-                            letterSpacing: 0.1,
-                            color: scheme.onSurface,
-                          ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      headerRef,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontSize: refSize,
-                            color: scheme.onSurface.withValues(alpha: 0.74),
-                          ),
-                    ),
-                  ],
-                ),
+    Widget pill({
+      required String label,
+      required VoidCallback onTap,
+      IconData? icon,
+    }) {
+      return InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: onTap,
+        child: Container(
+          height: 34,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: btn,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 10,
+                offset: const Offset(0, 6),
+                color: Colors.black.withValues(alpha: isDark ? 0.30 : 0.14),
               ),
-              const SizedBox(width: 15),
-
-              // RIGHT
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: (w * 0.42).clamp(70.0, 96.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _RightRow(
-                        left: rightInfo.topLeft, right: rightInfo.topRight),
-                    const SizedBox(height: 2),
-                    _RightRow(
-                        left: rightInfo.midLeft, right: rightInfo.midRight),
-                    const SizedBox(height: 6),
-
-                    // ✅ Doh pill uses theme primary tint (matches your blue themes!)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent, // ✅ no fill
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: scheme.outlineVariant
-                              .withValues(alpha: isDark ? 0.35 : 0.28),
-                        ),
-                      ),
-                      child: Text(
-                        rightInfo.bottom ?? 'Doh is —',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w900,
-                              fontSize: dohSize,
-                              color: scheme.onSurface.withValues(alpha: 0.88),
-                            ),
-                      ),
-                    ),
-                  ],
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 18, color: Colors.white),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
                 ),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        ),
+      );
+    }
+
+    return AnimatedBuilder(
+      animation: favorites,
+      builder: (_, __) {
+        final isFav = favorites.isFav(song.number);
+
+        return Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          alignment: WrapAlignment.center,
+          children: [
+            pill(
+              label: 'fav',
+              icon: isFav ? Icons.favorite : Icons.favorite_border,
+              onTap: () => favorites.toggle(song.number),
+            ),
+            pill(
+              label: 'copy',
+              icon: Icons.copy_rounded,
+              onTap: () async {
+                await Clipboard.setData(ClipboardData(text: shareText(song)));
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Copied!'),
+                      behavior: SnackBarBehavior.floating,
+                      width: 220,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+            pill(
+              label: 'share',
+              icon: Icons.share,
+              onTap: () => Share.share(shareText(song)),
+            ),
+          ],
+        );
+      },
     );
   }
 }
 
-class _NavCircle extends StatelessWidget {
+class _NavSquare extends StatelessWidget {
   final bool enabled;
-  final String tooltip;
   final IconData icon;
   final VoidCallback onTap;
 
-  const _NavCircle({
+  const _NavSquare({
     required this.enabled,
-    required this.tooltip,
     required this.icon,
     required this.onTap,
   });
@@ -1706,48 +1979,27 @@ class _NavCircle extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final isDark = scheme.brightness == Brightness.dark;
 
-    final fill = enabled
-        ? scheme.primary.withValues(alpha: isDark ? 0.22 : 0.12)
-        : scheme.surface.withValues(alpha: isDark ? 0.50 : 1.0);
+    // ✅ square button tint (no border)
+    final fill = scheme.primary.withValues(alpha: isDark ? 0.26 : 0.14);
 
-    final border = enabled
-        ? scheme.primary.withValues(alpha: isDark ? 0.28 : 0.22)
-        : scheme.outlineVariant.withValues(alpha: 0.20);
-
-    final iconColor =
-        enabled ? scheme.primary : scheme.onSurface.withValues(alpha: 0.35);
-
-    return Tooltip(
-      message: tooltip,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: enabled
-              ? () {
-                  HapticFeedback.selectionClick();
-                  onTap();
-                }
-              : null,
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 160),
-            opacity: enabled ? 1 : 0.55,
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: fill,
-                border: Border.all(color: border),
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
-                    color: Colors.black.withValues(alpha: isDark ? 0.28 : 0.10),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(8),
-              child: Icon(icon, size: 20, color: iconColor),
-            ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: enabled ? onTap : null,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 160),
+        opacity: enabled ? 1 : 0.45,
+        child: Container(
+          padding: const EdgeInsets.all(9), // ✅ compact
+          decoration: BoxDecoration(
+            color: fill,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            size: 18,
+            color: enabled
+                ? scheme.primary.withValues(alpha: 0.92)
+                : scheme.onSurface.withValues(alpha: 0.35),
           ),
         ),
       ),
@@ -1772,169 +2024,6 @@ class _RightInfo {
   });
 }
 
-class _RightRow extends StatelessWidget {
-  final String? left;
-  final String? right;
-
-  const _RightRow({this.left, this.right});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    String clean(String? v) {
-      final t = (v ?? '').trim();
-      return t.isEmpty ? '—' : t;
-    }
-
-    final style = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w800,
-          fontSize: 12,
-          letterSpacing: 0.1,
-          color: scheme.onSurface.withValues(alpha: 0.72),
-          height: 1.05,
-        );
-
-    return Row(
-      children: [
-        Flexible(
-          flex: 3,
-          child: Text(
-            clean(left),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.right,
-            style: style,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Flexible(
-          flex: 7,
-          child: Text(
-            clean(right),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-            style: style,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// ✅ Actions: now fully theme-driven (blue), no green lerp, and fixed alpha usage
-class _HeaderActionsBest extends StatelessWidget {
-  final Song song;
-  const _HeaderActionsBest({required this.song});
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final bool isDark = scheme.brightness == Brightness.dark;
-
-    final accent = scheme.primary; // ✅ matches your blue theme
-    final chipBg = accent.withValues(alpha: isDark ? 0.16 : 0.10);
-    final chipBorder = accent.withValues(alpha: isDark ? 0.22 : 0.18);
-    final labelColor = scheme.onSurface.withValues(alpha: 0.92);
-
-    String shareText(Song s) {
-      final header = '${s.number}. ${s.title}';
-      final lyrics =
-          s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
-      return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
-    }
-
-    Widget chip({
-      required String label,
-      required IconData icon,
-      required VoidCallback onTap,
-    }) {
-      return Material(
-        color: chipBg,
-        borderRadius: BorderRadius.circular(10),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(10),
-          onTap: onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: chipBorder),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 16, color: accent),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                        color: labelColor, // ✅ no invalid alpha (>1)
-                      ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Wrap(
-      spacing: 8,
-      runSpacing: 6,
-      alignment: WrapAlignment.center,
-      children: [
-        AnimatedBuilder(
-          animation: favorites,
-          builder: (_, __) {
-            final isFav = favorites.isFav(song.number);
-            return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 1.0, end: isFav ? 1.06 : 1.0),
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeOut,
-              builder: (context, scale, child) =>
-                  Transform.scale(scale: scale, child: child),
-              child: chip(
-                label: 'Fav',
-                icon: isFav ? Icons.favorite : Icons.favorite_border,
-                onTap: () => favorites.toggle(song.number),
-              ),
-            );
-          },
-        ),
-        chip(
-          label: 'Copy',
-          icon: Icons.copy,
-          onTap: () async {
-            await Clipboard.setData(ClipboardData(text: shareText(song)));
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Copied!'),
-                  behavior: SnackBarBehavior.floating,
-                  width: 220,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-              );
-            }
-          },
-        ),
-        chip(
-          label: 'Share',
-          icon: Icons.share,
-          onTap: () => Share.share(shareText(song)),
-        ),
-      ],
-    );
-  }
-}
-
-/// ----------------------
 /// ✅ PinnedHeaderDelegate
 /// ----------------------
 class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -2020,7 +2109,7 @@ List<LyricsBlock> parseLyricsBlocks(String raw) {
 
 Widget buildLyricsView(BuildContext context, String raw) {
   final scheme = Theme.of(context).colorScheme;
-  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final isDark = scheme.brightness == Brightness.dark;
   final blocks = parseLyricsBlocks(raw);
 
   if (raw.trim().isEmpty) {
@@ -2035,49 +2124,63 @@ Widget buildLyricsView(BuildContext context, String raw) {
   return AnimatedBuilder(
     animation: settings,
     builder: (_, __) {
-      // ✅ Strong readable text color (prevents "faded/blurred" look)
-      final lyricsColor = isDark
-          ? scheme.onSurface.withValues(alpha: 0.92)
-          : scheme.onSurface.withValues(alpha: 0.88);
+      final lyricsColor =
+          scheme.onSurface.withValues(alpha: isDark ? 0.93 : 0.90);
 
       final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontSize: settings.fontSize,
-            height: 1.25, // ✅ slightly more readable than 1.20
+            height: settings.lineHeight, // ✅ use your setting directly
             fontWeight: FontWeight.w500,
-            color: lyricsColor, // ✅ FIX
+            color: lyricsColor,
           );
 
-      if (blocks.isEmpty) {
-        return Text(raw, style: baseStyle);
-      }
+      if (blocks.isEmpty) return Text(raw, style: baseStyle);
+
+      Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: scheme.primary.withValues(alpha: isDark ? 0.90 : 0.82),
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.35,
+          );
 
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (final b in blocks) ...[
             if (b.isChorus) ...[
-              // ✅ Chorus label
+              const SizedBox(height: 8),
               Text(
                 'Chorus',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: scheme.primary.withValues(alpha: 0.95),
-                      fontWeight: FontWeight.w800,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.85),
+                      fontWeight: FontWeight.w600,
                       letterSpacing: 0.2,
                     ),
               ),
-              const SizedBox(height: 8),
 
-              // ✅ Chorus text (slightly stronger)
-              _StanzaView(
-                text: b.text,
-                style: baseStyle?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: lyricsColor.withValues(alpha: 0.96),
+              const SizedBox(height: 5),
+
+              // ✅ chorus block: slight indent + subtle left rail
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 21), // ✅ same as verse number width
+                child: _StanzaView(
+                  text: b.text,
+                  style: baseStyle?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: lyricsColor.withValues(alpha: 0.96),
+                    // optional hymnal feel
+                  ),
+                  showVerseNumber: false,
                 ),
               ),
-            ] else
-              Text(b.text, style: baseStyle),
-            const SizedBox(height: 27),
+            ] else ...[
+              _StanzaView(text: b.text, style: baseStyle),
+            ],
+
+            const SizedBox(height: 20), // ✅ tighter + consistent spacing
           ],
         ],
       );
@@ -2088,56 +2191,65 @@ Widget buildLyricsView(BuildContext context, String raw) {
 class _StanzaView extends StatelessWidget {
   final String text;
   final TextStyle? style;
+  final bool showVerseNumber;
 
   const _StanzaView({
     required this.text,
     this.style,
+    this.showVerseNumber = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final lines = text.split('\n');
+    final isDark = scheme.brightness == Brightness.dark;
 
-    if (lines.isEmpty) return Text(text, style: style);
+    final rawLines = text.split('\n');
+    if (rawLines.isEmpty) return Text(text, style: style);
 
-    final firstLine = lines.first.trim();
-
-    // Detect stanza number: "1." or "2)"
+    final firstLine = rawLines.first.trim();
     final match = RegExp(r'^(\d+)[\.\)]\s*(.*)').firstMatch(firstLine);
 
-    // Not a numbered stanza → normal text
-    if (match == null) {
-      return Text(text, style: style);
+    // Not a numbered stanza
+    if (match == null || !showVerseNumber) {
+      return Text(
+        text,
+        style: style?.copyWith(height: settings.lineHeight),
+      );
     }
 
     final number = match.group(1)!;
-    final firstText = match.group(2) ?? '';
-    final rest = lines.skip(1).join('\n');
+    final firstText = (match.group(2) ?? '').trim();
+    final rest = rawLines.skip(1).join('\n').trim();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final verseColor = scheme.primary.withValues(alpha: isDark ? 0.85 : 0.78);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ✅ Centered stanza number
-        Center(
+        // ✅ verse number on the left (hymnal style)
+        SizedBox(
+          width: 26,
           child: Text(
-            number,
+            '$number.',
+            textAlign: TextAlign.right,
             style: style?.copyWith(
-              fontSize: (style?.fontSize ?? 18) - 2,
-              fontWeight: FontWeight.w700,
-              color: scheme.primary.withValues(alpha: 0.85),
+              fontWeight: FontWeight.w900,
+              color: verseColor,
+              height: settings.lineHeight,
             ),
           ),
         ),
-        const SizedBox(height: 6),
 
-        Text(
-          [
-            if (firstText.isNotEmpty) firstText,
-            if (rest.isNotEmpty) rest,
-          ].join('\n'),
-          style: style?.copyWith(
-            height: settings.lineHeight * 0.9,
+        const SizedBox(width: 5),
+        // ✅ stanza text
+        Expanded(
+          child: Text(
+            [
+              if (firstText.isNotEmpty) firstText,
+              if (rest.isNotEmpty) rest,
+            ].join('\n'),
+            style: style?.copyWith(height: settings.lineHeight),
           ),
         ),
       ],
