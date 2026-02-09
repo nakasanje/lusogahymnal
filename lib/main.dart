@@ -1,7 +1,7 @@
 // main.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+//import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 // ignore: unnecessary_import
 import 'dart:ui';
@@ -410,20 +410,62 @@ class SdaLusogaHymnalApp extends StatelessWidget {
           themeMode: settings.themeMode,
 
           // ✅ LIGHT THEME
-          // ✅ LIGHT THEME — High Contrast Blue
+          // ✅ LIGHT THEME — White & Blue Hymnal
           theme: ThemeData(
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF0D47A1), // deep royal blue
+            colorScheme: ColorScheme(
               brightness: Brightness.light,
+
+              primary: const Color(0xFF1F3C88), // deep hymnal blue
+              onPrimary: Colors.white,
+
+              secondary: const Color(0xFF3F6AE1),
+              onSecondary: Colors.white,
+
+              background: Colors.white,
+              onBackground: const Color(0xFF121212),
+
+              surface: Colors.white,
+              onSurface: const Color(0xFF121212),
+
+              error: Colors.red,
+              onError: Colors.white,
             ),
-            scaffoldBackgroundColor: const Color(0xFFF7F9FC),
+            scaffoldBackgroundColor: Colors.white,
+            textTheme: const TextTheme(
+              titleLarge: TextStyle(
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF121212),
+              ),
+              titleMedium: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF121212),
+              ),
+              bodyLarge: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF1A1A1A),
+              ),
+              bodyMedium: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF2C2C2C),
+              ),
+            ),
             appBarTheme: const AppBarTheme(
               centerTitle: true,
               elevation: 0,
               scrolledUnderElevation: 0,
-              backgroundColor: Color(0xFFF7F9FC),
-              foregroundColor: Color(0xFF0B0B0B),
+              backgroundColor: Colors.white,
+              foregroundColor: Color(0xFF1F3C88),
+              titleTextStyle: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF1F3C88),
+              ),
+            ),
+            dividerTheme: DividerThemeData(
+              thickness: 1,
+              space: 1,
+              color: Color(0xFF1F3C88).withValues(alpha: 0.12),
             ),
             cardTheme: CardThemeData(
               elevation: 0,
@@ -433,25 +475,53 @@ class SdaLusogaHymnalApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
-            listTileTheme: const ListTileThemeData(
-              iconColor: Color(0xFF0D47A1),
-              textColor: Color(0xFF121212),
+            listTileTheme: ListTileThemeData(
+              iconColor: const Color(0xFF1F3C88),
+              textColor: const Color(0xFF121212),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: const Color(0xFFF5F7FF),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(color: Color(0xFFD6DCF2)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  color: Color(0xFF1F3C88),
+                  width: 1.4,
+                ),
+              ),
+              hintStyle: const TextStyle(color: Color(0xFF6B7280)),
             ),
             navigationBarTheme: NavigationBarThemeData(
               elevation: 0,
               height: 70,
-              backgroundColor: const Color(0xFFE8EEF7),
-              indicatorColor: const Color(0xFF0D47A1).withValues(alpha: 0.18),
+              backgroundColor: Colors.white,
+              indicatorColor: const Color(0xFF1F3C88).withValues(alpha: 0.12),
+              labelTextStyle: const WidgetStatePropertyAll(
+                TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+              ),
               iconTheme: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
                   return const IconThemeData(
                     size: 26,
-                    color: Color(0xFF0D47A1),
+                    color: Color.fromARGB(255, 40, 78, 173),
                   );
                 }
                 return const IconThemeData(
                   size: 24,
-                  color: Color(0xFF444444),
+                  color: Color(0xFF6B7280),
                 );
               }),
             ),
@@ -1217,10 +1287,6 @@ class SettingsScreen extends StatelessWidget {
 /// ----------------------
 /// ----------------------
 
-// ✅ FULL corrected SongDetails (same look on big + small screens)
-// ✅ Fixes: missing header, white gaps, crushed right column, consistent controls row
-// ✅ Uses measured pinned-header height (no guessing)
-
 class SongDetails extends StatefulWidget {
   final Song song;
   final List<Song> allSongs;
@@ -1239,7 +1305,7 @@ class SongDetails extends StatefulWidget {
 
 class _SongDetailsState extends State<SongDetails> {
   final GlobalKey _headerKey = GlobalKey();
-  double _headerHeight = 190; // safe default before measuring
+  double _headerHeight = 190;
 
   @override
   void initState() {
@@ -1250,7 +1316,6 @@ class _SongDetailsState extends State<SongDetails> {
   @override
   void didUpdateWidget(covariant SongDetails oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // re-measure when song changes
     WidgetsBinding.instance.addPostFrameCallback((_) => _measureHeader());
   }
 
@@ -1300,17 +1365,17 @@ class _SongDetailsState extends State<SongDetails> {
     }
 
     const maxPageWidth = 920.0;
+    final bg = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: bg,
       body: Column(
         children: [
-          // 👉 THIS fixes the ugly top outside color
+          // ✅ ensures status-bar area matches theme background on all devices
           Container(
             height: MediaQuery.of(context).padding.top,
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: bg,
           ),
-
           Expanded(
             child: Scrollbar(
               child: CustomScrollView(
@@ -1320,7 +1385,7 @@ class _SongDetailsState extends State<SongDetails> {
                     delegate: PinnedHeaderDelegate(
                       height: _headerHeight,
                       child: _PremiumPinnedHeaderBest(
-                        key: _headerKey, // ✅ measure this exact widget
+                        key: _headerKey,
                         song: widget.song,
                         headerRef: headerRef,
                         rightInfo: rightInfo,
@@ -1332,8 +1397,6 @@ class _SongDetailsState extends State<SongDetails> {
                       ),
                     ),
                   ),
-
-                  // ✅ Lyrics tight to header (no big white gap)
                   SliverToBoxAdapter(
                     child: Center(
                       child: ConstrainedBox(
@@ -1404,32 +1467,51 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
+    final scheme = Theme.of(context).colorScheme;
+    final bg = Theme.of(context).scaffoldBackgroundColor;
 
-      // ✅ small consistent padding like your inspiration
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: maxWidth),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _PremiumHeaderCard(
-                song: song,
-                headerRef: headerRef,
-                rightInfo: rightInfo,
+    // ✅ “frosted” pinned header: looks premium in both light + dark
+    final bool isDark = scheme.brightness == Brightness.dark;
+    final overlay = (isDark ? Colors.black : Colors.white)
+        .withValues(alpha: isDark ? 0.10 : 0.55);
+
+    return Material(
+      color: bg,
+      child: ClipRect(
+        child: Stack(
+          children: [
+            // subtle blur (very light) to separate header from lyrics when scrolling
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(color: overlay),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _PremiumHeaderCard(
+                        song: song,
+                        headerRef: headerRef,
+                        rightInfo: rightInfo,
+                      ),
+                      const SizedBox(height: 6),
+                      _ControlsRow(
+                        song: song,
+                        canPrev: canPrev,
+                        canNext: canNext,
+                        onPrev: onPrev,
+                        onNext: onNext,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 6),
-              _ControlsRow(
-                song: song,
-                canPrev: canPrev,
-                canNext: canNext,
-                onPrev: onPrev,
-                onNext: onNext,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -1491,18 +1573,26 @@ class _PremiumHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
+    final bool isDark = scheme.brightness == Brightness.dark;
+    final surface = scheme.surface;
+    final border = scheme.primary.withValues(
+      alpha: isDark ? 0.28 : 0.18,
+    );
+
+    // ✅ shadow tuned per theme (dark shadows should be softer)
+    final shadowColor = (isDark ? Colors.black : Colors.black)
+        .withValues(alpha: isDark ? 0.25 : 0.20);
+
     return Container(
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerHighest,
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.28),
-        ),
-        borderRadius: BorderRadius.circular(12),
+        color: surface,
+        border: Border.all(color: border),
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: isDark ? 16 : 20,
+            offset: const Offset(0, 10),
+            color: shadowColor,
           ),
         ],
       ),
@@ -1510,8 +1600,6 @@ class _PremiumHeaderCard extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, c) {
           final w = c.maxWidth;
-
-          // ✅ stable sizing across devices
           final titleSize = (w * 0.032).clamp(16.5, 18.0);
           final refSize = (w * 0.020).clamp(11.0, 13.0);
           final dohSize = (w * 0.024).clamp(12.0, 15.0);
@@ -1537,41 +1625,24 @@ class _PremiumHeaderCard extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.bookmark_outline,
-                          size: (refSize + 6).clamp(14.0, 18.0),
-                          color: scheme.onSurface.withValues(alpha: 0.55),
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            headerRef,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                  fontSize: refSize,
-                                  color:
-                                      scheme.onSurface.withValues(alpha: 0.72),
-                                ),
+                    Text(
+                      headerRef,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontSize: refSize,
+                            color: scheme.onSurface.withValues(alpha: 0.74),
                           ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(width: 15),
 
-              // RIGHT ✅ FIXED: do NOT clamp to 60..100 (that crushes it)
+              // RIGHT
               ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: (w * 0.42).clamp(70.0, 90.0),
+                  maxWidth: (w * 0.42).clamp(70.0, 96.0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -1582,15 +1653,17 @@ class _PremiumHeaderCard extends StatelessWidget {
                     _RightRow(
                         left: rightInfo.midLeft, right: rightInfo.midRight),
                     const SizedBox(height: 6),
+
+                    // ✅ Doh pill uses theme primary tint (matches your blue themes!)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 6),
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: scheme.surfaceContainerLowest
-                            .withValues(alpha: 0.75),
-                        borderRadius: BorderRadius.circular(999),
+                        color: Colors.transparent, // ✅ no fill
+                        borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: scheme.outlineVariant.withValues(alpha: 0.25),
+                          color: scheme.outlineVariant
+                              .withValues(alpha: isDark ? 0.35 : 0.28),
                         ),
                       ),
                       child: Text(
@@ -1631,25 +1704,49 @@ class _NavCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
+
+    final fill = enabled
+        ? scheme.primary.withValues(alpha: isDark ? 0.22 : 0.12)
+        : scheme.surface.withValues(alpha: isDark ? 0.50 : 1.0);
+
+    final border = enabled
+        ? scheme.primary.withValues(alpha: isDark ? 0.28 : 0.22)
+        : scheme.outlineVariant.withValues(alpha: 0.20);
+
+    final iconColor =
+        enabled ? scheme.primary : scheme.onSurface.withValues(alpha: 0.35);
 
     return Tooltip(
       message: tooltip,
       child: Material(
-        color: scheme.surfaceContainerLowest.withValues(alpha: 0.70),
-        shape: const CircleBorder(),
+        color: Colors.transparent,
         child: InkWell(
           customBorder: const CircleBorder(),
-          onTap: enabled ? onTap : null,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 160),
-              opacity: enabled ? 1 : 0.35,
-              child: Icon(
-                icon,
-                size: 18,
-                color: scheme.onSurface.withValues(alpha: 0.90),
+          onTap: enabled
+              ? () {
+                  HapticFeedback.selectionClick();
+                  onTap();
+                }
+              : null,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 160),
+            opacity: enabled ? 1 : 0.55,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: fill,
+                border: Border.all(color: border),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                    color: Colors.black.withValues(alpha: isDark ? 0.28 : 0.10),
+                  ),
+                ],
               ),
+              padding: const EdgeInsets.all(8),
+              child: Icon(icon, size: 20, color: iconColor),
             ),
           ),
         ),
@@ -1726,7 +1823,7 @@ class _RightRow extends StatelessWidget {
   }
 }
 
-/// ✅ Actions (small + wraps nicely on mobile)
+/// ✅ Actions: now fully theme-driven (blue), no green lerp, and fixed alpha usage
 class _HeaderActionsBest extends StatelessWidget {
   final Song song;
   const _HeaderActionsBest({required this.song});
@@ -1734,7 +1831,12 @@ class _HeaderActionsBest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final accent = Color.lerp(scheme.primary, Colors.green, 0.35)!;
+    final bool isDark = scheme.brightness == Brightness.dark;
+
+    final accent = scheme.primary; // ✅ matches your blue theme
+    final chipBg = accent.withValues(alpha: isDark ? 0.16 : 0.10);
+    final chipBorder = accent.withValues(alpha: isDark ? 0.22 : 0.18);
+    final labelColor = scheme.onSurface.withValues(alpha: 0.92);
 
     String shareText(Song s) {
       final header = '${s.number}. ${s.title}';
@@ -1749,17 +1851,15 @@ class _HeaderActionsBest extends StatelessWidget {
       required VoidCallback onTap,
     }) {
       return Material(
-        color: accent.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(8), // ✅ square
+        color: chipBg,
+        borderRadius: BorderRadius.circular(10),
         child: InkWell(
-          borderRadius: BorderRadius.circular(8), // ✅ square tap ripple
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8), // ✅ square
-              border: Border.all(
-                color: scheme.outlineVariant.withValues(alpha: 0.22),
-              ),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: chipBorder),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Row(
@@ -1772,7 +1872,7 @@ class _HeaderActionsBest extends StatelessWidget {
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                         fontSize: 12,
-                        color: scheme.onSurface.withValues(alpha: 0.86),
+                        color: labelColor, // ✅ no invalid alpha (>1)
                       ),
                 ),
               ],
@@ -1817,7 +1917,8 @@ class _HeaderActionsBest extends StatelessWidget {
                   behavior: SnackBarBehavior.floating,
                   width: 220,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
               );
             }
