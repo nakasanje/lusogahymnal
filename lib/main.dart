@@ -1709,7 +1709,7 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, c) {
         final w = c.maxWidth;
-        final rightW = (w * 0.40).clamp(50.0, 100.0);
+        final rightW = (w * 0.40).clamp(70.0, 130.0);
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
