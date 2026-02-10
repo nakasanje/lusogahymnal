@@ -1691,14 +1691,14 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
 
     final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w900,
-          fontSize: 14,
+          fontSize: 13,
           height: 1,
           color: scheme.onSurface,
         );
 
     final refStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           fontWeight: FontWeight.w700,
-          fontSize: 11,
+          fontSize: 10,
           height: 1,
           color: scheme.onSurface.withValues(alpha: 0.70),
         );
@@ -1853,18 +1853,20 @@ class _ControlsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _NavSquare(
-          enabled: canPrev,
-          icon: Icons.chevron_left, // ✅ better icon + fixed syntax
-          onTap: onPrev,
+        NavPillButton(
+          label: "Prev",
+          icon: Icons.chevron_left,
+          onTap: canPrev ? onPrev : null,
+          color: const Color(0xFFF2A900), // yellow
         ),
         const SizedBox(width: 10),
         Expanded(child: _HeaderActionsScreenshotStyle(song: song)),
         const SizedBox(width: 10),
-        _NavSquare(
-          enabled: canNext,
-          icon: Icons.chevron_right, // ✅ match previous icon
-          onTap: onNext,
+        NavPillButton(
+          label: "Next",
+          icon: Icons.chevron_right,
+          onTap: canNext ? onNext : null,
+          color: const Color(0xFF2FA87E), // green
         ),
       ],
     );
@@ -1902,16 +1904,16 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Ink(
-            height: 32,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            height: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               border: const Border(
-                top: BorderSide(color: Colors.black, width: 1),
-                bottom: BorderSide(color: Colors.black, width: 1),
-                left: BorderSide(color: Colors.black, width: 1),
-                right: BorderSide(color: Colors.black, width: 1),
+                top: BorderSide(color: Colors.black, width: 0.8),
+                bottom: BorderSide(color: Colors.black, width: 0.8),
+                left: BorderSide(color: Colors.black, width: 0.8),
+                right: BorderSide(color: Colors.black, width: 0.8),
               ), // ✅ black border like keyboard
             ),
             child: Row(
@@ -1947,12 +1949,12 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
           alignment: WrapAlignment.center,
           children: [
             pill(
-              label: 'fav',
+              label: 'Fav',
               icon: isFav ? Icons.favorite : Icons.favorite_border,
               onTap: () => favorites.toggle(song.number),
             ),
             pill(
-              label: 'copy',
+              label: 'Copy',
               icon: Icons.copy_rounded,
               onTap: () async {
                 await Clipboard.setData(ClipboardData(text: shareText(song)));
@@ -1971,7 +1973,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
               },
             ),
             pill(
-              label: 'share',
+              label: 'Share',
               icon: Icons.share,
               onTap: () => Share.share(shareText(song)),
             ),
@@ -1982,43 +1984,51 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
   }
 }
 
-class _NavSquare extends StatelessWidget {
-  final bool enabled;
+class NavPillButton extends StatelessWidget {
+  final String label;
   final IconData icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final Color color;
 
-  const _NavSquare({
-    required this.enabled,
+  const NavPillButton({
+    super.key,
+    required this.label,
     required this.icon,
     required this.onTap,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final enabled = onTap != null;
 
-    final bg = scheme.surfaceContainerHighest;
-    final fg = scheme.onSurface;
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      onTap: enabled ? onTap : null,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 160),
-        opacity: enabled ? 1 : 0.45,
-        child: Ink(
-          padding: const EdgeInsets.all(10),
+    return Opacity(
+      opacity: enabled ? 1 : 0.45,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: Container(
+          height: 28, // ✅ match header action buttons
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(16),
-            border: const Border.fromBorderSide(
-              BorderSide(color: Colors.black, width: 0.5),
-            ), // ✅ black border like keypad
+            color: color,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.black, width: 0.8),
           ),
-          child: Icon(
-            icon,
-            size: 18,
-            color: fg,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: Colors.white),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 13, // ✅ same text size
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
       ),
