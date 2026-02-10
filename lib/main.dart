@@ -1715,79 +1715,83 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
         final w = c.maxWidth;
         final rightW = (w * 0.36).clamp(70.0, 130.0);
 
-        return Material(
-          borderRadius: BorderRadius.circular(14),
-          clipBehavior: Clip.antiAlias,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  scheme.surface.withValues(alpha: 0.95),
-                  scheme.surfaceContainerHighest.withValues(alpha: 0.75),
-                ],
+        return SizedBox(
+          width: double.infinity, // ✅ forces full width
+          child: Material(
+            borderRadius: BorderRadius.circular(14),
+            clipBehavior: Clip.antiAlias,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    scheme.surface.withValues(alpha: 0.95),
+                    scheme.surfaceContainerHighest.withValues(alpha: 0.75),
+                  ],
+                ),
+                border: Border.all(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  width: 0.8,
+                ),
+                borderRadius: BorderRadius.circular(14),
               ),
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.15),
-                width: 0.8,
-              ),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Padding(
-              // ✅ reduce horizontal padding a bit so text fits better
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${song.number}    ${song.title}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: titleStyle,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          headerRef,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: refStyle,
-                        ),
-                      ],
+              child: Padding(
+                // ✅ reduce horizontal padding a bit so text fits better
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${song.number}    ${song.title}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: titleStyle,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            headerRef,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: refStyle,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 7),
-                  SizedBox(
-                    width: rightW,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        _RightPairRow(
-                          left: _clean(rightInfo.topLeft),
-                          right: _clean(rightInfo.topRight),
-                          style: rightStyle,
-                        ),
-                        const SizedBox(height: 2),
-                        _RightPairRow(
-                          left: _clean(rightInfo.midLeft),
-                          right: _clean(rightInfo.midRight),
-                          style: rightStyle,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _clean(rightInfo.bottom),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: rightStyle?.copyWith(fontSize: 11),
-                        ),
-                      ],
+                    const SizedBox(width: 7),
+                    SizedBox(
+                      width: rightW,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          _RightPairRow(
+                            left: _clean(rightInfo.topLeft),
+                            right: _clean(rightInfo.topRight),
+                            style: rightStyle,
+                          ),
+                          const SizedBox(height: 2),
+                          _RightPairRow(
+                            left: _clean(rightInfo.midLeft),
+                            right: _clean(rightInfo.midRight),
+                            style: rightStyle,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _clean(rightInfo.bottom),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: rightStyle?.copyWith(fontSize: 11),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
