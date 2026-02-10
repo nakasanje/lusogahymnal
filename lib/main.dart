@@ -1427,9 +1427,8 @@ class SettingsScreen extends StatelessWidget {
 }
 
 /// ----------------------
-/// DETAILS (Pinned header + lyrics)
-/// ----------------------
-/// ----------------------
+/// DETAILS (Pinned header + 
+
 
 class SongDetails extends StatefulWidget {
   final Song song;
@@ -1448,116 +1447,30 @@ class SongDetails extends StatefulWidget {
 }
 
 class _SongDetailsState extends State<SongDetails> {
-  final GlobalKey _headerKey = GlobalKey();
-  double _headerHeight = 190;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measureHeader());
-  }
-
-  @override
-  void didUpdateWidget(covariant SongDetails oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _measureHeader());
-  }
-
-  void _measureHeader() {
-    final ctx = _headerKey.currentContext;
-    if (ctx == null) return;
-    final ro = ctx.findRenderObject();
-    if (ro is! RenderBox) return;
-
-    final h = ro.size.height;
-    if (h.isFinite && (h - _headerHeight).abs() > 1) {
-      setState(() => _headerHeight = h);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final headerRef = _bestReferenceLine(widget.song);
-    final rightInfo = _bestRightInfo(widget.song.meta);
-
-    void goPrev() {
-      if (widget.index <= 0) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => SongDetails(
-            song: widget.allSongs[widget.index - 1],
-            allSongs: widget.allSongs,
-            index: widget.index - 1,
-          ),
+  void _goPrev() {
+    if (widget.index <= 0) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SongDetails(
+          song: widget.allSongs[widget.index - 1],
+          allSongs: widget.allSongs,
+          index: widget.index - 1,
         ),
-      );
-    }
+      ),
+    );
+  }
 
-    void goNext() {
-      if (widget.index >= widget.allSongs.length - 1) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => SongDetails(
-            song: widget.allSongs[widget.index + 1],
-            allSongs: widget.allSongs,
-            index: widget.index + 1,
-          ),
+  void _goNext() {
+    if (widget.index >= widget.allSongs.length - 1) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SongDetails(
+          song: widget.allSongs[widget.index + 1],
+          allSongs: widget.allSongs,
+          index: widget.index + 1,
         ),
-      );
-    }
-
-    const maxPageWidth = 920.0;
-    final bg = Theme.of(context).scaffoldBackgroundColor;
-
-    return Scaffold(
-      backgroundColor: bg,
-      body: Column(
-        children: [
-          // ✅ ensures status-bar area matches theme background on all devices
-          Container(
-            height: MediaQuery.of(context).padding.top,
-            color: bg,
-          ),
-          Expanded(
-            child: Scrollbar(
-              child: CustomScrollView(
-                slivers: [
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: PinnedHeaderDelegate(
-                      height: _headerHeight,
-                      child: _PremiumPinnedHeaderBest(
-                        key: _headerKey,
-                        song: widget.song,
-                        headerRef: headerRef,
-                        rightInfo: rightInfo,
-                        canPrev: widget.index > 0,
-                        canNext: widget.index < widget.allSongs.length - 1,
-                        onPrev: goPrev,
-                        onNext: goNext,
-                        maxWidth: maxPageWidth,
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Center(
-                      child: ConstrainedBox(
-                        constraints:
-                            const BoxConstraints(maxWidth: maxPageWidth),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(14, 6, 14, 28),
-                          child: buildLyricsView(context, widget.song.lyrics),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -1585,83 +1498,103 @@ class _SongDetailsState extends State<SongDetails> {
       bottom: doh.isEmpty ? 'Doh is —' : 'Doh is $doh',
     );
   }
-}
-
-class _PremiumPinnedHeaderBest extends StatelessWidget {
-  final Song song;
-  final String headerRef;
-  final _RightInfo rightInfo;
-  final bool canPrev;
-  final bool canNext;
-  final VoidCallback onPrev;
-  final VoidCallback onNext;
-  final double maxWidth;
-
-  const _PremiumPinnedHeaderBest({
-    super.key,
-    required this.song,
-    required this.headerRef,
-    required this.rightInfo,
-    required this.canPrev,
-    required this.canNext,
-    required this.onPrev,
-    required this.onNext,
-    required this.maxWidth,
-  });
 
   @override
   Widget build(BuildContext context) {
+    const maxPageWidth = 920.0;
+
+    final headerRef = _bestReferenceLine(widget.song);
+    final rightInfo = _bestRightInfo(widget.song.meta);
+
     final scheme = Theme.of(context).colorScheme;
     final isDark = scheme.brightness == Brightness.dark;
-
-    // Pinned area = same as page background (like screenshot)
     final bg = Theme.of(context).scaffoldBackgroundColor;
 
-    // Floating “header card” look
     final cardColor = scheme.surface;
-    final cardShadow = Colors.black.withValues(alpha: isDark ? 0.50 : 0.18);
+    final cardShadow = Colors.black.withValues(alpha: isDark ? 0.45 : 0.14);
 
-    return Container(
-      color: bg,
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: maxWidth),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // ✅ ONE floating card (no divider, no blur)
-              Container(
-                decoration: BoxDecoration(
-                  color: cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                      color: cardShadow,
+    final canPrev = widget.index > 0;
+    final canNext = widget.index < widget.allSongs.length - 1;
+
+    // AppBar bottom height (kept fixed to avoid layout jumping)
+    const bottomH = 118.0;
+
+    return Scaffold(
+      backgroundColor: bg,
+
+      // ✅ NAV BAR with all former sticky header content inside
+      appBar: AppBar(
+        backgroundColor: bg,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'SDA Lusoga Hymnal',
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(bottomH),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: maxPageWidth),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ✅ header card (same look as before)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: cardColor,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                            color: cardShadow,
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                      child: _HeaderCardLikeScreenshot(
+                        song: widget.song,
+                        headerRef: headerRef,
+                        rightInfo: rightInfo,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+
+                    // ✅ controls row (Prev | actions | Next)
+                    _ControlsRow(
+                      song: widget.song,
+                      canPrev: canPrev,
+                      canNext: canNext,
+                      onPrev: _goPrev,
+                      onNext: _goNext,
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                child: _HeaderCardLikeScreenshot(
-                  song: song,
-                  headerRef: headerRef,
-                  rightInfo: rightInfo,
-                ),
               ),
+            ),
+          ),
+        ),
+      ),
 
-              const SizedBox(height: 5),
-
-              // ✅ Row: Prev | (dark buttons) | Next  (reuses your previous buttons)
-              _ControlsRow(
-                song: song,
-                canPrev: canPrev,
-                canNext: canNext,
-                onPrev: onPrev,
-                onNext: onNext,
+      // ✅ Lyrics continue below
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: maxPageWidth),
+          child: Scrollbar(
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true, // ✅ prevents iPhone “mysterious top gap”
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
+                children: [
+                  buildLyricsView(context, widget.song.lyrics),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -1716,82 +1649,79 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
         final rightW = (w * 0.36).clamp(70.0, 130.0);
 
         return SizedBox(
-          width: double.infinity, // ✅ forces full width
-          child: Material(
-            borderRadius: BorderRadius.circular(14),
-            clipBehavior: Clip.antiAlias,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    scheme.surface.withValues(alpha: 0.95),
-                    scheme.surfaceContainerHighest.withValues(alpha: 0.75),
-                  ],
-                ),
-                border: Border.all(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  width: 0.8,
-                ),
-                borderRadius: BorderRadius.circular(14),
+          width: double.infinity,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  scheme.surface.withValues(alpha: 0.95),
+                  scheme.surfaceContainerHighest.withValues(alpha: 0.75),
+                ],
               ),
-              child: Padding(
-                // ✅ reduce horizontal padding a bit so text fits better
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${song.number}    ${song.title}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: titleStyle,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            headerRef,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: refStyle,
-                          ),
-                        ],
-                      ),
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.15),
+                width: 0.8,
+              ),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // LEFT
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${song.number}    ${song.title}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: titleStyle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          headerRef,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: refStyle,
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 7),
-                    SizedBox(
-                      width: rightW,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          _RightPairRow(
-                            left: _clean(rightInfo.topLeft),
-                            right: _clean(rightInfo.topRight),
-                            style: rightStyle,
-                          ),
-                          const SizedBox(height: 2),
-                          _RightPairRow(
-                            left: _clean(rightInfo.midLeft),
-                            right: _clean(rightInfo.midRight),
-                            style: rightStyle,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            _clean(rightInfo.bottom),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: rightStyle?.copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(width: 7),
+
+                  // RIGHT
+                  SizedBox(
+                    width: rightW,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _RightPairRow(
+                          left: _clean(rightInfo.topLeft),
+                          right: _clean(rightInfo.topRight),
+                          style: rightStyle,
+                        ),
+                        const SizedBox(height: 2),
+                        _RightPairRow(
+                          left: _clean(rightInfo.midLeft),
+                          right: _clean(rightInfo.midRight),
+                          style: rightStyle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _clean(rightInfo.bottom),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: rightStyle?.copyWith(fontSize: 11),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -1862,13 +1792,11 @@ class _ControlsRow extends StatelessWidget {
       children: [
         _NavSquare(
           enabled: canPrev,
-          icon: Icons.chevron_left, // cleaner than arrows
+          icon: Icons.chevron_left,
           onTap: onPrev,
         ),
         const SizedBox(width: 8),
-        Expanded(
-          child: _HeaderActionsScreenshotStyle(song: song),
-        ),
+        Expanded(child: _HeaderActionsScreenshotStyle(song: song)),
         const SizedBox(width: 8),
         _NavSquare(
           enabled: canNext,
@@ -1913,11 +1841,7 @@ class _NavSquare extends StatelessWidget {
               BorderSide(color: Colors.black, width: 1),
             ),
           ),
-          child: Icon(
-            icon,
-            size: 18, // good visibility
-            color: fg,
-          ),
+          child: Icon(icon, size: 18, color: fg),
         ),
       ),
     );
@@ -1928,25 +1852,22 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
   final Song song;
   const _HeaderActionsScreenshotStyle({required this.song});
 
+  String shareText(Song s) {
+    final header = '${s.number}. ${s.title}';
+    final lyrics = s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
+    return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-
-    // Screenshot buttons: dark navy
-
-    String shareText(Song s) {
-      final header = '${s.number}. ${s.title}';
-      final lyrics =
-          s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
-      return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
-    }
 
     Widget pill({
       required String label,
       required VoidCallback onTap,
       IconData? icon,
     }) {
-      final bg = scheme.surfaceContainerHighest; // like tonal feel
+      final bg = scheme.surfaceContainerHighest;
       final fg = scheme.onSurface;
 
       return Material(
@@ -1960,12 +1881,9 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
             decoration: BoxDecoration(
               color: bg,
               borderRadius: BorderRadius.circular(10),
-              border: const Border(
-                top: BorderSide(color: Colors.black, width: 0.8),
-                bottom: BorderSide(color: Colors.black, width: 0.8),
-                left: BorderSide(color: Colors.black, width: 0.8),
-                right: BorderSide(color: Colors.black, width: 0.8),
-              ), // ✅ black border like keyboard
+              border: const Border.fromBorderSide(
+                BorderSide(color: Colors.black, width: 0.8),
+              ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -2006,7 +1924,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
             ),
             pill(
               label: 'Copy',
-              icon: Icons.copy_rounded,
+              icon: Icons.content_copy, // ✅ clearer than copy_rounded
               onTap: () async {
                 await Clipboard.setData(ClipboardData(text: shareText(song)));
                 if (context.mounted) {
@@ -2014,7 +1932,6 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
                     SnackBar(
                       content: const Text('Copied!'),
                       behavior: SnackBarBehavior.floating,
-                      width: 20,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -2025,64 +1942,12 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
             ),
             pill(
               label: 'Share',
-              icon: Icons.share,
+              icon: Icons.ios_share, // ✅ more premium feel
               onTap: () => Share.share(shareText(song)),
             ),
           ],
         );
       },
-    );
-  }
-}
-
-class NavPillButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback? onTap;
-  final Color color;
-
-  const NavPillButton({
-    super.key,
-    required this.label,
-    required this.icon,
-    required this.onTap,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final enabled = onTap != null;
-
-    return Opacity(
-      opacity: enabled ? 1 : 0.45,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        onTap: onTap,
-        child: Container(
-          height: 28, // ✅ match header action buttons
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black, width: 0.8),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 16, color: Colors.white),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 13, // ✅ same text size
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
@@ -2103,6 +1968,7 @@ class _RightInfo {
     this.bottom,
   });
 }
+
 
 /// ✅ PinnedHeaderDelegate
 /// ----------------------
