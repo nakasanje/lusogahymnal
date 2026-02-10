@@ -1520,7 +1520,8 @@ class _SongDetailsState extends State<SongDetails> {
     const bottomH = 118.0;
 
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+  elevation: 0,
 
       // ✅ NAV BAR with all former sticky header content inside
       appBar: AppBar(
