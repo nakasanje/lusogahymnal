@@ -1020,6 +1020,10 @@ class _HomeJumpScreenState extends State<HomeJumpScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
+                          side: const BorderSide(
+                            color: Colors.black54, // ✅ black border
+                            width: 1.2,
+                          ),
                           textStyle: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w900,
@@ -1687,22 +1691,22 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
 
     final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w900,
-          fontSize: 15,
-          height: 1.05,
+          fontSize: 14,
+          height: 1,
           color: scheme.onSurface,
         );
 
     final refStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           fontWeight: FontWeight.w700,
           fontSize: 11,
-          height: 1.2,
+          height: 1,
           color: scheme.onSurface.withValues(alpha: 0.70),
         );
 
     final rightStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w900,
           fontSize: 10,
-          height: 1.05,
+          height: 1,
           color: scheme.onSurface,
         );
 
