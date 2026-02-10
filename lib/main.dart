@@ -1713,12 +1713,12 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, c) {
         final w = c.maxWidth;
-        final rightW = (w * 0.40).clamp(70.0, 130.0);
+        final rightW = (w * 0.36).clamp(70.0, 130.0);
 
         return Material(
           borderRadius: BorderRadius.circular(14),
           clipBehavior: Clip.antiAlias,
-          child: Ink(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -1734,58 +1734,61 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(14),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${song.number}    ${song.title}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: titleStyle,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        headerRef,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: refStyle,
-                      ),
-                    ],
+            child: Padding(
+              // ✅ reduce horizontal padding a bit so text fits better
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${song.number}    ${song.title}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: titleStyle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          headerRef,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: refStyle,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: rightW,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _RightPairRow(
-                        left: _clean(rightInfo.topLeft),
-                        right: _clean(rightInfo.topRight),
-                        style: rightStyle,
-                      ),
-                      const SizedBox(height: 2),
-                      _RightPairRow(
-                        left: _clean(rightInfo.midLeft),
-                        right: _clean(rightInfo.midRight),
-                        style: rightStyle,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _clean(rightInfo.bottom),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: rightStyle?.copyWith(fontSize: 11),
-                      ),
-                    ],
+                  const SizedBox(width: 7),
+                  SizedBox(
+                    width: rightW,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        _RightPairRow(
+                          left: _clean(rightInfo.topLeft),
+                          right: _clean(rightInfo.topRight),
+                          style: rightStyle,
+                        ),
+                        const SizedBox(height: 2),
+                        _RightPairRow(
+                          left: _clean(rightInfo.midLeft),
+                          right: _clean(rightInfo.midRight),
+                          style: rightStyle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _clean(rightInfo.bottom),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: rightStyle?.copyWith(fontSize: 11),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -1818,7 +1821,7 @@ class _RightPairRow extends StatelessWidget {
             style: style,
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         Expanded(
           child: Text(
             right,
@@ -1853,22 +1856,66 @@ class _ControlsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        NavPillButton(
-          label: "Prev",
-          icon: Icons.chevron_left,
-          onTap: canPrev ? onPrev : null,
-          color: const Color(0xFFF2A900), // yellow
+        _NavSquare(
+          enabled: canPrev,
+          icon: Icons.chevron_left, // cleaner than arrows
+          onTap: onPrev,
         ),
-        const SizedBox(width: 10),
-        Expanded(child: _HeaderActionsScreenshotStyle(song: song)),
-        const SizedBox(width: 10),
-        NavPillButton(
-          label: "Next",
+        const SizedBox(width: 8),
+        Expanded(
+          child: _HeaderActionsScreenshotStyle(song: song),
+        ),
+        const SizedBox(width: 8),
+        _NavSquare(
+          enabled: canNext,
           icon: Icons.chevron_right,
-          onTap: canNext ? onNext : null,
-          color: const Color(0xFF2FA87E), // green
+          onTap: onNext,
         ),
       ],
+    );
+  }
+}
+
+class _NavSquare extends StatelessWidget {
+  final bool enabled;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _NavSquare({
+    required this.enabled,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    final bg = scheme.surfaceContainerHighest;
+    final fg = scheme.onSurface;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: enabled ? onTap : null,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 150),
+        opacity: enabled ? 1 : 0.45,
+        child: Ink(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(14),
+            border: const Border.fromBorderSide(
+              BorderSide(color: Colors.black, width: 1),
+            ),
+          ),
+          child: Icon(
+            icon,
+            size: 18, // good visibility
+            color: fg,
+          ),
+        ),
+      ),
     );
   }
 }
