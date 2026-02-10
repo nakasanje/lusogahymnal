@@ -1538,7 +1538,12 @@ class _SongDetailsState extends State<SongDetails> {
             padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: maxPageWidth),
+                constraints: BoxConstraints(
+  maxWidth: MediaQuery.of(context).size.width < 600
+      ? double.infinity
+      : maxPageWidth,
+),
+
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
