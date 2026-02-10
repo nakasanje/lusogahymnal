@@ -1535,7 +1535,9 @@ class _SongDetailsState extends State<SongDetails> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(bottomH),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
+            padding: const EdgeInsets.fromLTRB(6, 6, 6, 10),
+
+      
             child: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -1560,7 +1562,8 @@ class _SongDetailsState extends State<SongDetails> {
                           ),
                         ],
                       ),
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                      padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+
                       child: _HeaderCardLikeScreenshot(
                         song: widget.song,
                         headerRef: headerRef,
@@ -1672,7 +1675,7 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
