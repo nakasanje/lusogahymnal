@@ -1637,8 +1637,8 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      blurRadius: 18,
-                      offset: const Offset(0, 8),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
                       color: cardShadow,
                     ),
                   ],
@@ -1651,7 +1651,7 @@ class _PremiumPinnedHeaderBest extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
 
               // ✅ Row: Prev | (dark buttons) | Next  (reuses your previous buttons)
               _ControlsRow(
@@ -1715,60 +1715,79 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
         final w = c.maxWidth;
         final rightW = (w * 0.40).clamp(70.0, 130.0);
 
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // LEFT: number + title + ref
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${song.number}    ${song.title}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: titleStyle,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    headerRef,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: refStyle,
-                  ),
+        return Material(
+          borderRadius: BorderRadius.circular(14),
+          clipBehavior: Clip.antiAlias,
+          child: Ink(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  scheme.surface.withValues(alpha: 0.95),
+                  scheme.surfaceContainerHighest.withValues(alpha: 0.75),
                 ],
               ),
-            ),
-            const SizedBox(width: 10),
-
-            // RIGHT: two rows + Doh line (like screenshot)
-            SizedBox(
-              width: rightW,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  _RightPairRow(
-                    left: _clean(rightInfo.topLeft),
-                    right: _clean(rightInfo.topRight),
-                    style: rightStyle,
-                  ),
-                  const SizedBox(height: 2),
-                  _RightPairRow(
-                    left: _clean(rightInfo.midLeft),
-                    right: _clean(rightInfo.midRight),
-                    style: rightStyle,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _clean(rightInfo.bottom),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: rightStyle?.copyWith(fontSize: 11),
-                  ),
-                ],
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.15),
+                width: 0.8,
               ),
+              borderRadius: BorderRadius.circular(14),
             ),
-          ],
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${song.number}    ${song.title}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: titleStyle,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        headerRef,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: refStyle,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: rightW,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _RightPairRow(
+                        left: _clean(rightInfo.topLeft),
+                        right: _clean(rightInfo.topRight),
+                        style: rightStyle,
+                      ),
+                      const SizedBox(height: 2),
+                      _RightPairRow(
+                        left: _clean(rightInfo.midLeft),
+                        right: _clean(rightInfo.midRight),
+                        style: rightStyle,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _clean(rightInfo.bottom),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: rightStyle?.copyWith(fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -1834,22 +1853,17 @@ class _ControlsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // ✅ your existing prev button
         _NavSquare(
           enabled: canPrev,
-          icon: Icons.arrow_back_ios_new_rounded,
+          icon: Icons.chevron_left, // ✅ better icon + fixed syntax
           onTap: onPrev,
         ),
         const SizedBox(width: 10),
-
-        // ✅ screenshot-style dark buttons in the middle
         Expanded(child: _HeaderActionsScreenshotStyle(song: song)),
-
         const SizedBox(width: 10),
-        // ✅ your existing next button
         _NavSquare(
           enabled: canNext,
-          icon: Icons.arrow_forward_ios_rounded,
+          icon: Icons.chevron_right, // ✅ match previous icon
           onTap: onNext,
         ),
       ],
@@ -1864,12 +1878,8 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isDark = scheme.brightness == Brightness.dark;
 
     // Screenshot buttons: dark navy
-    final btn = isDark
-        ? const Color.fromARGB(255, 75, 116, 218)
-        : const Color.fromARGB(255, 75, 116, 218);
 
     String shareText(Song s) {
       final header = '${s.number}. ${s.title}';
@@ -1883,39 +1893,44 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
       required VoidCallback onTap,
       IconData? icon,
     }) {
-      return InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: onTap,
-        child: Container(
-          height: 30,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          decoration: BoxDecoration(
-            color: btn,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 10,
-                offset: const Offset(0, 6),
-                color: Colors.black.withValues(alpha: isDark ? 0.30 : 0.14),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 16, color: Colors.white),
-                const SizedBox(width: 8),
-              ],
-              Text(
-                label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 14,
+      final bg = scheme.surfaceContainerHighest; // like tonal feel
+      final fg = scheme.onSurface;
+
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: onTap,
+          child: Ink(
+            height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(12),
+              border: const Border(
+                top: BorderSide(color: Colors.black, width: 1),
+                bottom: BorderSide(color: Colors.black, width: 1),
+                left: BorderSide(color: Colors.black, width: 1),
+                right: BorderSide(color: Colors.black, width: 1),
+              ), // ✅ black border like keyboard
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, size: 16, color: fg),
+                  const SizedBox(width: 7),
+                ],
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: fg,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 13,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
@@ -1981,29 +1996,29 @@ class _NavSquare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isDark = scheme.brightness == Brightness.dark;
 
-    // ✅ square button tint (no border)
-    final fill = scheme.primary.withValues(alpha: isDark ? 0.26 : 0.14);
+    final bg = scheme.surfaceContainerHighest;
+    final fg = scheme.onSurface;
 
     return InkWell(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       onTap: enabled ? onTap : null,
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 160),
         opacity: enabled ? 1 : 0.45,
-        child: Container(
-          padding: const EdgeInsets.all(8), // ✅ compact
+        child: Ink(
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: fill,
-            borderRadius: BorderRadius.circular(12),
+            color: bg,
+            borderRadius: BorderRadius.circular(16),
+            border: const Border.fromBorderSide(
+              BorderSide(color: Colors.black, width: 0.5),
+            ), // ✅ black border like keypad
           ),
           child: Icon(
             icon,
-            size: 15,
-            color: enabled
-                ? scheme.primary.withValues(alpha: 0.92)
-                : scheme.onSurface.withValues(alpha: 0.35),
+            size: 18,
+            color: fg,
           ),
         ),
       ),
