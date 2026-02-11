@@ -1491,6 +1491,37 @@ class _SongDetailsState extends State<SongDetails> {
     );
   }
 
+  void _openSongAt(int newIndex, {required bool forward}) {
+  if (newIndex < 0 || newIndex >= widget.allSongs.length) return;
+
+  Navigator.pushReplacement(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => SongDetails(
+        song: widget.allSongs[newIndex],
+        allSongs: widget.allSongs,
+        index: newIndex,
+      ),
+      transitionDuration: const Duration(milliseconds: 220),
+      reverseTransitionDuration: const Duration(milliseconds: 220),
+      transitionsBuilder: (_, animation, __, child) {
+        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+
+        // ✅ forward (next): new page comes from right
+        // ✅ backward (prev): new page comes from left
+        final begin = Offset(forward ? 1.0 : -1.0, 0.0);
+        final end = Offset.zero;
+
+        return SlideTransition(
+          position: Tween<Offset>(begin: begin, end: end).animate(curved),
+          child: child,
+        );
+      },
+    ),
+  );
+}
+
+
   String _bestReferenceLine(Song s) {
     final ref = s.reference?.trim();
     if (ref != null && ref.isNotEmpty) return ref;
@@ -1602,12 +1633,16 @@ class _SongDetailsState extends State<SongDetails> {
         final v = details.primaryVelocity ?? 0;
         const threshold = 350;
 
-        if (v > threshold && canPrev) {
-          _goPrev(); // swipe right → previous hymn
-        } else if (v < -threshold && canNext) {
-          _goNext(); // swipe left → next hymn
-        }
-      },
+        void _goPrev() {
+  if (widget.index <= 0) return;
+  _openSongAt(widget.index - 1, forward: false);
+}
+
+void _goNext() {
+  if (widget.index >= widget.allSongs.length - 1) return;
+  _openSongAt(widget.index + 1, forward: true);
+}
+
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: maxPageWidth),
@@ -1901,6 +1936,8 @@ class _NavSquare extends StatelessWidget {
     );
   }
 }
+
+      
 
 // unchanged
 class _HeaderActionsScreenshotStyle extends StatelessWidget {
