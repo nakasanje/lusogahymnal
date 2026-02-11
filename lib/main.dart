@@ -425,7 +425,7 @@ ThemeData hymnalLightTheme() {
   );
 
   return ThemeData(
-    useMaterial3: true,
+    useMaterial3: false,
     colorScheme: cs,
     scaffoldBackgroundColor: scaffold,
 
@@ -1161,7 +1161,7 @@ class _SongsHomeState extends State<SongsHome> {
                     color: Theme.of(context)
                         .colorScheme
                         .primary
-                        .withValues(alpha: 0.18),
+                        .withValues(alpha: 0.20),
                     width: 1.1,
                   ),
                 ),
@@ -1261,7 +1261,10 @@ class _SongsHomeState extends State<SongsHome> {
                         ),
                         title: Text(
                           song.title,
-                          style: const TextStyle(fontWeight: FontWeight.w700),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
                         ),
                         trailing: Icon(Icons.chevron_right,
                             color: scheme.onSurfaceVariant),
@@ -1287,8 +1290,8 @@ class _SongsHomeState extends State<SongsHome> {
                         padding: const EdgeInsets.only(left: 65),
                         child: Divider(
                           height: 1,
-                          thickness: 1,
-                          color: scheme.outlineVariant.withValues(alpha: 0.10),
+                          thickness: 2.5,
+                          color: scheme.outlineVariant.withValues(alpha: 0.20),
                         ),
                       ),
                     ],
