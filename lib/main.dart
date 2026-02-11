@@ -1463,64 +1463,46 @@ class SongDetails extends StatefulWidget {
 }
 
 class _SongDetailsState extends State<SongDetails> {
-  void _goPrev() {
-    if (widget.index <= 0) return;
+  // ✅ Direction-aware transition
+  void _openSongAt(int newIndex, {required bool forward}) {
+    if (newIndex < 0 || newIndex >= widget.allSongs.length) return;
+
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => SongDetails(
-          song: widget.allSongs[widget.index - 1],
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => SongDetails(
+          song: widget.allSongs[newIndex],
           allSongs: widget.allSongs,
-          index: widget.index - 1,
+          index: newIndex,
         ),
+        transitionDuration: const Duration(milliseconds: 220),
+        reverseTransitionDuration: const Duration(milliseconds: 220),
+        transitionsBuilder: (_, animation, __, child) {
+          final curved =
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+
+          // next -> from right, prev -> from left
+          final begin = Offset(forward ? 1.0 : -1.0, 0.0);
+
+          return SlideTransition(
+            position:
+                Tween<Offset>(begin: begin, end: Offset.zero).animate(curved),
+            child: child,
+          );
+        },
       ),
     );
+  }
+
+  void _goPrev() {
+    if (widget.index <= 0) return;
+    _openSongAt(widget.index - 1, forward: false);
   }
 
   void _goNext() {
     if (widget.index >= widget.allSongs.length - 1) return;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SongDetails(
-          song: widget.allSongs[widget.index + 1],
-          allSongs: widget.allSongs,
-          index: widget.index + 1,
-        ),
-      ),
-    );
+    _openSongAt(widget.index + 1, forward: true);
   }
-
-  void _openSongAt(int newIndex, {required bool forward}) {
-  if (newIndex < 0 || newIndex >= widget.allSongs.length) return;
-
-  Navigator.pushReplacement(
-    context,
-    PageRouteBuilder(
-      pageBuilder: (_, __, ___) => SongDetails(
-        song: widget.allSongs[newIndex],
-        allSongs: widget.allSongs,
-        index: newIndex,
-      ),
-      transitionDuration: const Duration(milliseconds: 220),
-      reverseTransitionDuration: const Duration(milliseconds: 220),
-      transitionsBuilder: (_, animation, __, child) {
-        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-
-        // ✅ forward (next): new page comes from right
-        // ✅ backward (prev): new page comes from left
-        final begin = Offset(forward ? 1.0 : -1.0, 0.0);
-        final end = Offset.zero;
-
-        return SlideTransition(
-          position: Tween<Offset>(begin: begin, end: end).animate(curved),
-          child: child,
-        );
-      },
-    ),
-  );
-}
-
 
   String _bestReferenceLine(Song s) {
     final ref = s.reference?.trim();
@@ -1552,123 +1534,118 @@ class _SongDetailsState extends State<SongDetails> {
     final rightInfo = _bestRightInfo(widget.song.meta);
 
     final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
 
     final canPrev = widget.index > 0;
     final canNext = widget.index < widget.allSongs.length - 1;
-
-    final isDark = scheme.brightness == Brightness.dark;
 
     final lyricsBg = isDark ? scheme.surface : Colors.white;
     final topBg = scheme.surfaceContainerHighest;
 
     return Scaffold(
-  backgroundColor: lyricsBg,
-  appBar: AppBar(
-    backgroundColor: topBg,
-    foregroundColor: scheme.primary,
-    surfaceTintColor: Colors.transparent,
-    scrolledUnderElevation: 0,
-    elevation: 0,
+      backgroundColor: lyricsBg,
+      appBar: AppBar(
+        backgroundColor: topBg,
+        foregroundColor: scheme.primary,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        toolbarHeight: 0,
 
-    automaticallyImplyLeading: false, // ✅ removes back arrow
-    toolbarHeight: 0, // ✅ removes empty title area
-
-    bottom: PreferredSize(
-      preferredSize: const Size.fromHeight(120),
-      child: Container(
-        color: topBg,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(6, 8, 6, 10),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width < 600
-                        ? double.infinity
-                        : 920,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _HeaderCardLikeScreenshot(
-                        song: widget.song,
-                        headerRef: headerRef,
-                        rightInfo: rightInfo,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(120),
+          child: Container(
+            color: topBg,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 8, 6, 10),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width < 600
+                            ? double.infinity
+                            : 920,
                       ),
-                      const SizedBox(height: 4),
-                      _ControlsRow(
-                        song: widget.song,
-                        canPrev: canPrev,
-                        canNext: canNext,
-                        onPrev: _goPrev,
-                        onNext: _goNext,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _HeaderCardLikeScreenshot(
+                            song: widget.song,
+                            headerRef: headerRef,
+                            rightInfo: rightInfo,
+                          ),
+                          const SizedBox(height: 4),
+                          _ControlsRow(
+                            song: widget.song,
+                            canPrev: canPrev,
+                            canNext: canNext,
+                            onPrev: _goPrev,
+                            onNext: _goNext,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // ✅ Thin bottom divider line (web-safe: use withOpacity)
+                Container(
+                  height: 1,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.10),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      body: Container(
+        color: lyricsBg,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onHorizontalDragEnd: (details) {
+            final v = details.primaryVelocity ?? 0;
+            const threshold = 350;
+
+            if (v > threshold && canPrev) {
+              _goPrev(); // swipe right -> prev
+            } else if (v < -threshold && canNext) {
+              _goNext(); // swipe left -> next
+            }
+          },
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: maxPageWidth),
+              child: Scrollbar(
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
+                    children: [
+                      Container(
+                        color: lyricsBg,
+                        child: buildLyricsView(context, widget.song.lyrics),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-
-            // ✅ Thin bottom divider line
-            Container(
-              height: 1,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.10),
-            ),
-          ],
-        ),
-      ),
-    ),
-  ),
-
-  body: Container(
-    color: lyricsBg,
-    child: GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onHorizontalDragEnd: (details) {
-        final v = details.primaryVelocity ?? 0;
-        const threshold = 350;
-
-        void _goPrev() {
-  if (widget.index <= 0) return;
-  _openSongAt(widget.index - 1, forward: false);
-}
-
-void _goNext() {
-  if (widget.index >= widget.allSongs.length - 1) return;
-  _openSongAt(widget.index + 1, forward: true);
-}
-
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: maxPageWidth),
-          child: Scrollbar(
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
-                children: [
-                  Container(
-                    color: lyricsBg,
-                    child: buildLyricsView(context, widget.song.lyrics),
-                  ),
-                ],
-              ),
-            ),
           ),
         ),
       ),
-    ),
-  ),
-);
-
+    );
   }
 }
+
+
 
 class _HeaderCardLikeScreenshot extends StatelessWidget {
   final Song song;
