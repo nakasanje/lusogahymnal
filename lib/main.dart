@@ -1391,7 +1391,7 @@ class FavoritesScreen extends StatelessWidget {
                         ),
                         title: Text(
                           song.title,
-                          style: const TextStyle(fontWeight: FontWeight.w700),
+                          style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         trailing: IconButton(
                           tooltip: 'Remove from favorites',
@@ -1525,8 +1525,10 @@ class _SongDetailsState extends State<SongDetails> {
     final canPrev = widget.index > 0;
     final canNext = widget.index < widget.allSongs.length - 1;
 
-    const lyricsBg = Colors.white;
-    const topBg = Color(0xFFF3F5F9);
+    final isDark = scheme.brightness == Brightness.dark;
+
+    final lyricsBg = isDark ? scheme.surface : Colors.white;
+    final topBg = scheme.surfaceContainerHighest;
 
     return Scaffold(
       backgroundColor: lyricsBg,
@@ -1579,7 +1581,7 @@ class _SongDetailsState extends State<SongDetails> {
         ),
       ),
       body: Container(
-        color: Colors.white, // ← ADD THIS LINE
+        color: lyricsBg, // ← ADD THIS LINE
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: maxPageWidth),
@@ -1591,7 +1593,7 @@ class _SongDetailsState extends State<SongDetails> {
                   padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
                   children: [
                     Container(
-                      color: Colors.white, // forces pure white behind lyrics
+                      color: lyricsBg, // forces pure white behind lyrics
                       child: buildLyricsView(context, widget.song.lyrics),
                     ),
                   ],
@@ -1624,6 +1626,7 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
 
     final titleStyle = Theme.of(context).textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w900,
@@ -1651,30 +1654,43 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
         final w = c.maxWidth;
         final rightW = (w * 0.36).clamp(70.0, 130.0);
 
-        // ✅ classy cool-gray / subtle blue tint gradient (reads premium on white)
-        const g1 = Color(0xFFF7F8FB); // very light
-        const g2 = Color(0xFFEFF2F9); // slightly deeper
-        const g3 = Color(0xFFFDFDFE); // lift highlight
+        // ✅ Light mode premium gradient
+        const lg1 = Color(0xFFF7F8FB);
+        const lg2 = Color(0xFFEFF2F9);
+        const lg3 = Color(0xFFFDFDFE);
+
+        // ✅ Dark mode premium gradient (deep navy panels)
+        const dg1 = Color(0xFF0F1A2E);
+        const dg2 = Color(0xFF101F3A);
+        const dg3 = Color(0xFF0B1220);
+
+        final gradientColors =
+            isDark ? const [dg3, dg1, dg2] : const [lg3, lg1, lg2];
+
+        final borderColor = isDark
+            ? Colors.white.withValues(alpha: 0.08)
+            : Colors.black.withValues(alpha: 0.10);
+
+        final shadowColor = isDark
+            ? Colors.black.withValues(alpha: 0.45)
+            : Colors.black.withValues(alpha: 0.06);
 
         return SizedBox(
           width: double.infinity,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [g3, g1, g2],
+                colors: gradientColors,
               ),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.10),
-                width: 0.8,
-              ),
+              border: Border.all(color: borderColor, width: 0.8),
               boxShadow: [
                 BoxShadow(
-                  blurRadius: 10,
+                  blurRadius: isDark ? 16 : 10,
                   offset: const Offset(0, 4),
-                  color: Colors.black.withValues(alpha: 0.06),
+                  color: shadowColor,
                 ),
               ],
             ),
