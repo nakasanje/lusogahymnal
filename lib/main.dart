@@ -1562,18 +1562,21 @@ class _SongDetailsState extends State<SongDetails> {
           ),
         ),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: maxPageWidth),
-          child: Scrollbar(
-            child: MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
-                children: [
-                  buildLyricsView(context, widget.song.lyrics),
-                ],
+      body: Container(
+        color: Colors.white, // ← ADD THIS LINE
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: maxPageWidth),
+            child: Scrollbar(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
+                  children: [
+                    buildLyricsView(context, widget.song.lyrics),
+                  ],
+                ),
               ),
             ),
           ),
