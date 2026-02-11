@@ -1508,78 +1508,60 @@ class _SongDetailsState extends State<SongDetails> {
     final canPrev = widget.index > 0;
     final canNext = widget.index < widget.allSongs.length - 1;
 
-    // ✅ White lyrics area
     const lyricsBg = Colors.white;
-
-    // ✅ AppBar + header area color (classy, not too loud)
-    // Works well with white body and your black borders.
-    final topBg = scheme.surfaceContainerHighest;
-
-    // AppBar bottom height (kept fixed to avoid layout jumping)
-    const bottomH = 85.0;
+    const topBg = Color(0xFFF3F5F9);
+    const bottomH = 90.0;
 
     return Scaffold(
-      // ✅ Body (lyrics zone) white
       backgroundColor: lyricsBg,
-
       appBar: AppBar(
         backgroundColor: topBg,
-        foregroundColor: scheme.onSurface,
+        foregroundColor: scheme.primary,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
         elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'SDA Lusoga Hymnal',
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
 
-        // ✅ Header + controls inside AppBar area (NOT wrapped in outer container)
+        automaticallyImplyLeading: false, // ✅ removes back arrow
+        toolbarHeight: 0,
+
+        // ❌ Removed title completely
+        // title: const Text('SDA Lusoga Hymnal'),
+
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(bottomH),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: topBg, // same as appbar bg
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.black.withValues(alpha: 0.10),
-                  width: 0.8,
+          preferredSize: const Size.fromHeight(120),
+          child: Container(
+            color: topBg,
+            padding: const EdgeInsets.fromLTRB(6, 8, 6, 10),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width < 600
+                      ? double.infinity
+                      : 920,
                 ),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(6, 6, 6, 10),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width < 600
-                        ? double.infinity
-                        : maxPageWidth,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _HeaderCardLikeScreenshot(
-                        song: widget.song,
-                        headerRef: headerRef,
-                        rightInfo: rightInfo,
-                      ),
-                      const SizedBox(height: 2),
-                      _ControlsRow(
-                        song: widget.song,
-                        canPrev: canPrev,
-                        canNext: canNext,
-                        onPrev: _goPrev,
-                        onNext: _goNext,
-                      ),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _HeaderCardLikeScreenshot(
+                      song: widget.song,
+                      headerRef: headerRef,
+                      rightInfo: rightInfo,
+                    ),
+                    const SizedBox(height: 4),
+                    _ControlsRow(
+                      song: widget.song,
+                      canPrev: canPrev,
+                      canNext: canNext,
+                      onPrev: _goPrev,
+                      onNext: _goNext,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
         ),
       ),
-
-      // ✅ Lyrics continue below on white
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: maxPageWidth),
@@ -1590,8 +1572,6 @@ class _SongDetailsState extends State<SongDetails> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
                 children: [
-                  // Optional: give lyrics a little “paper margin” feel
-                  // without changing your buildLyricsView
                   buildLyricsView(context, widget.song.lyrics),
                 ],
               ),
@@ -1665,14 +1645,14 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Colors.black.withValues(alpha: 0.14),
+                color: Colors.black.withValues(alpha: 0.10),
                 width: 0.8,
               ),
               boxShadow: [
                 BoxShadow(
                   blurRadius: 10,
                   offset: const Offset(0, 4),
-                  color: Colors.black.withValues(alpha: 0.08),
+                  color: Colors.black.withValues(alpha: 0.06),
                 ),
               ],
             ),
