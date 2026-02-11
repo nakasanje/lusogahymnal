@@ -295,7 +295,7 @@ class AppSettings extends ChangeNotifier {
   static const _kLineHeight = 'lineHeight';
   static const _kThemeMode = 'themeMode'; // 0 system, 1 light, 2 dark
 
-  double fontSize = 18;
+  double fontSize = 24;
   double lineHeight = 1.55;
   ThemeMode themeMode = ThemeMode.system;
 
@@ -305,7 +305,7 @@ class AppSettings extends ChangeNotifier {
     _prefs ??= await SharedPreferences.getInstance();
     final p = _prefs!;
 
-    fontSize = p.getDouble(_kFontSize) ?? 18;
+    fontSize = p.getDouble(_kFontSize) ?? 24;
     lineHeight = p.getDouble(_kLineHeight) ?? 1.55;
 
     final mode = p.getInt(_kThemeMode) ?? 0;
@@ -1339,13 +1339,14 @@ class FavoritesScreen extends StatelessWidget {
           body: favSongs.isEmpty
               ? Center(
                   child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 1),
                     elevation: 0,
                     color: scheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: EdgeInsets.all(10),
                       child: Text(
                         'No favorites yet.\nTap the ⭐ on a hymn to save it here.',
                         textAlign: TextAlign.center,
@@ -1354,9 +1355,20 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                 )
               : ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                   itemCount: favSongs.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  separatorBuilder: (_, __) => Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+                    child: Divider(
+                      height: 1,
+                      thickness: 0.8,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .outlineVariant
+                          .withValues(alpha: 0.35),
+                    ),
+                  ),
                   itemBuilder: (context, i) {
                     final song = favSongs[i];
 
@@ -2167,6 +2179,7 @@ class SettingsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final font = settings.fontSize.clamp(14.0, 40.0);
     return SafeArea(
       child: AnimatedBuilder(
         animation: settings,
@@ -2186,10 +2199,10 @@ class SettingsSheet extends StatelessWidget {
                   const SizedBox(height: 14),
                   Text('Font size: ${settings.fontSize.toStringAsFixed(0)}'),
                   Slider(
-                    value: settings.fontSize,
+                    value: font,
                     min: 14,
-                    max: 28,
-                    divisions: 14,
+                    max: 40,
+                    divisions: 26, // 40 - 14 = 26 steps
                     onChanged: settings.setFontSize,
                   ),
                   const SizedBox(height: 8),
