@@ -1428,9 +1428,7 @@ class SettingsScreen extends StatelessWidget {
 }
 
 /// ----------------------
-/// DETAILS (Pinned header + 
-
-
+/// DETAILS (Pinned header +
 class SongDetails extends StatefulWidget {
   final Song song;
   final List<Song> allSongs;
@@ -1476,8 +1474,6 @@ class _SongDetailsState extends State<SongDetails> {
     );
   }
 
-  // --- Helpers --------------------------------------------------
-
   String _bestReferenceLine(Song s) {
     final ref = s.reference?.trim();
     if (ref != null && ref.isNotEmpty) return ref;
@@ -1508,25 +1504,27 @@ class _SongDetailsState extends State<SongDetails> {
     final rightInfo = _bestRightInfo(widget.song.meta);
 
     final scheme = Theme.of(context).colorScheme;
-    final isDark = scheme.brightness == Brightness.dark;
-    final bg = Theme.of(context).scaffoldBackgroundColor;
-
-    final cardColor = scheme.surface;
-    final cardShadow = Colors.black.withValues(alpha: isDark ? 0.45 : 0.14);
 
     final canPrev = widget.index > 0;
     final canNext = widget.index < widget.allSongs.length - 1;
 
+    // ✅ White lyrics area
+    const lyricsBg = Colors.white;
+
+    // ✅ AppBar + header area color (classy, not too loud)
+    // Works well with white body and your black borders.
+    final topBg = scheme.surfaceContainerHighest;
+
     // AppBar bottom height (kept fixed to avoid layout jumping)
-    const bottomH = 118.0;
+    const bottomH = 85.0;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-  elevation: 0,
+      // ✅ Body (lyrics zone) white
+      backgroundColor: lyricsBg,
 
-      // ✅ NAV BAR with all former sticky header content inside
       appBar: AppBar(
-        backgroundColor: bg,
+        backgroundColor: topBg,
+        foregroundColor: scheme.onSurface,
         elevation: 0,
         centerTitle: true,
         title: const Text(
@@ -1534,55 +1532,46 @@ class _SongDetailsState extends State<SongDetails> {
           style: TextStyle(fontWeight: FontWeight.w800),
         ),
 
+        // ✅ Header + controls inside AppBar area (NOT wrapped in outer container)
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(bottomH),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(6, 6, 6, 10),
-
-      
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-  maxWidth: MediaQuery.of(context).size.width < 600
-      ? double.infinity
-      : maxPageWidth,
-),
-
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // ✅ header card (same look as before)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: cardColor,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                            color: cardShadow,
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-
-                      child: _HeaderCardLikeScreenshot(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: topBg, // same as appbar bg
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.black.withValues(alpha: 0.10),
+                  width: 0.8,
+                ),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(6, 6, 6, 10),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width < 600
+                        ? double.infinity
+                        : maxPageWidth,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _HeaderCardLikeScreenshot(
                         song: widget.song,
                         headerRef: headerRef,
                         rightInfo: rightInfo,
                       ),
-                    ),
-                    const SizedBox(height: 6),
-
-                    // ✅ controls row (Prev | actions | Next)
-                    _ControlsRow(
-                      song: widget.song,
-                      canPrev: canPrev,
-                      canNext: canNext,
-                      onPrev: _goPrev,
-                      onNext: _goNext,
-                    ),
-                  ],
+                      const SizedBox(height: 2),
+                      _ControlsRow(
+                        song: widget.song,
+                        canPrev: canPrev,
+                        canNext: canNext,
+                        onPrev: _goPrev,
+                        onNext: _goNext,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -1590,17 +1579,19 @@ class _SongDetailsState extends State<SongDetails> {
         ),
       ),
 
-      // ✅ Lyrics continue below
+      // ✅ Lyrics continue below on white
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: maxPageWidth),
           child: Scrollbar(
             child: MediaQuery.removePadding(
               context: context,
-              removeTop: true, // ✅ prevents iPhone “mysterious top gap”
+              removeTop: true,
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
                 children: [
+                  // Optional: give lyrics a little “paper margin” feel
+                  // without changing your buildLyricsView
                   buildLyricsView(context, widget.song.lyrics),
                 ],
               ),
@@ -1658,6 +1649,11 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
         final w = c.maxWidth;
         final rightW = (w * 0.36).clamp(70.0, 130.0);
 
+        // ✅ classy cool-gray / subtle blue tint gradient (reads premium on white)
+        final g1 = const Color(0xFFF7F8FB); // very light
+        final g2 = const Color(0xFFEFF2F9); // slightly deeper
+        final g3 = const Color(0xFFFDFDFE); // lift highlight
+
         return SizedBox(
           width: double.infinity,
           child: DecoratedBox(
@@ -1665,23 +1661,26 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  scheme.surface.withValues(alpha: 0.95),
-                  scheme.surfaceContainerHighest.withValues(alpha: 0.75),
-                ],
-              ),
-              border: Border.all(
-                color: Colors.black.withValues(alpha: 0.15),
-                width: 0.8,
+                colors: [g3, g1, g2],
               ),
               borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.14),
+                width: 0.8,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                  color: Colors.black.withValues(alpha: 0.08),
+                ),
+              ],
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // LEFT
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1702,9 +1701,7 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 7),
-
-                  // RIGHT
+                  const SizedBox(width: 6),
                   SizedBox(
                     width: rightW,
                     child: Column(
@@ -1740,6 +1737,9 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
     );
   }
 }
+
+// Everything else (RightPairRow, ControlsRow, NavSquare, HeaderActionsScreenshotStyle, RightInfo)
+// can remain as you already have it.
 
 class _RightPairRow extends StatelessWidget {
   final String left;
@@ -1780,7 +1780,6 @@ class _RightPairRow extends StatelessWidget {
   }
 }
 
-/// ✅ Always same on all screens: Prev | Actions | Next
 class _ControlsRow extends StatelessWidget {
   final Song song;
   final bool canPrev;
@@ -1832,7 +1831,6 @@ class _NavSquare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-
     final bg = scheme.surfaceContainerHighest;
     final fg = scheme.onSurface;
 
@@ -1858,13 +1856,15 @@ class _NavSquare extends StatelessWidget {
   }
 }
 
+// unchanged
 class _HeaderActionsScreenshotStyle extends StatelessWidget {
   final Song song;
   const _HeaderActionsScreenshotStyle({required this.song});
 
   String shareText(Song s) {
     final header = '${s.number}. ${s.title}';
-    final lyrics = s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
+    final lyrics =
+        s.lyrics.trim().isEmpty ? 'Lyrics not added yet.' : s.lyrics.trim();
     return '$header\n\n$lyrics\n\n— SDA Lusoga Hymnal';
   }
 
@@ -1886,7 +1886,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Ink(
-            height: 30,
+            height: 28,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               color: bg,
@@ -1934,7 +1934,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
             ),
             pill(
               label: 'Copy',
-              icon: Icons.content_copy, // ✅ clearer than copy_rounded
+              icon: Icons.content_copy,
               onTap: () async {
                 await Clipboard.setData(ClipboardData(text: shareText(song)));
                 if (context.mounted) {
@@ -1952,7 +1952,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
             ),
             pill(
               label: 'Share',
-              icon: Icons.ios_share, // ✅ more premium feel
+              icon: Icons.ios_share,
               onTap: () => Share.share(shareText(song)),
             ),
           ],
@@ -1962,7 +1962,6 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
   }
 }
 
-/// Holds the right-side strings
 class _RightInfo {
   final String? topLeft;
   final String? topRight;
@@ -1977,36 +1976,6 @@ class _RightInfo {
     this.midRight,
     this.bottom,
   });
-}
-
-
-/// ✅ PinnedHeaderDelegate
-/// ----------------------
-class PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final double height;
-  final Widget child;
-
-  PinnedHeaderDelegate({
-    required this.height,
-    required this.child,
-  });
-
-  @override
-  double get minExtent => height;
-
-  @override
-  double get maxExtent => height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return SizedBox.expand(child: child);
-  }
-
-  @override
-  bool shouldRebuild(covariant PinnedHeaderDelegate oldDelegate) {
-    return height != oldDelegate.height || child != oldDelegate.child;
-  }
 }
 
 /// ----------------------
