@@ -1597,7 +1597,7 @@ class _SongDetailsState extends State<SongDetails> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
-                      .withOpacity(0.10),
+                      .withOpacity(0.30),
                 ),
               ],
             ),
