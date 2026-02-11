@@ -421,7 +421,7 @@ ThemeData hymnalLightTheme() {
     onError: Colors.white,
     // M3 “container” color used by some widgets
     surfaceContainerHighest: softFill,
-    outline: const Color(0x00000000),
+    outline: const Color(0x14000000),
   );
 
   return ThemeData(
@@ -451,6 +451,7 @@ ThemeData hymnalLightTheme() {
       centerTitle: true,
       elevation: 0,
       scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       backgroundColor: scaffold,
       foregroundColor: primary,
       titleTextStyle: TextStyle(
@@ -591,6 +592,7 @@ ThemeData hymnalDarkTheme() {
       centerTitle: true,
       elevation: 0,
       scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       backgroundColor: scaffold,
       foregroundColor: Color(0xFFEAF0FF),
       titleTextStyle: TextStyle(
@@ -1510,7 +1512,6 @@ class _SongDetailsState extends State<SongDetails> {
 
     const lyricsBg = Colors.white;
     const topBg = Color(0xFFF3F5F9);
-    const bottomH = 90.0;
 
     return Scaffold(
       backgroundColor: lyricsBg,
@@ -1574,7 +1575,10 @@ class _SongDetailsState extends State<SongDetails> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
                   children: [
-                    buildLyricsView(context, widget.song.lyrics),
+                    Container(
+                      color: Colors.white, // forces pure white behind lyrics
+                      child: buildLyricsView(context, widget.song.lyrics),
+                    ),
                   ],
                 ),
               ),
@@ -1633,15 +1637,15 @@ class _HeaderCardLikeScreenshot extends StatelessWidget {
         final rightW = (w * 0.36).clamp(70.0, 130.0);
 
         // ✅ classy cool-gray / subtle blue tint gradient (reads premium on white)
-        final g1 = const Color(0xFFF7F8FB); // very light
-        final g2 = const Color(0xFFEFF2F9); // slightly deeper
-        final g3 = const Color(0xFFFDFDFE); // lift highlight
+        const g1 = Color(0xFFF7F8FB); // very light
+        const g2 = Color(0xFFEFF2F9); // slightly deeper
+        const g3 = Color(0xFFFDFDFE); // lift highlight
 
         return SizedBox(
           width: double.infinity,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [g3, g1, g2],
@@ -1866,14 +1870,14 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
       return Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Ink(
-            height: 28,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            height: 26,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               color: bg,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               border: const Border.fromBorderSide(
                 BorderSide(color: Colors.black, width: 0.8),
               ),
@@ -1882,15 +1886,15 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (icon != null) ...[
-                  Icon(icon, size: 16, color: fg),
-                  const SizedBox(width: 7),
+                  Icon(icon, size: 14, color: fg),
+                  const SizedBox(width: 2),
                 ],
                 Text(
                   label,
                   style: TextStyle(
                     color: fg,
                     fontWeight: FontWeight.w900,
-                    fontSize: 13,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -1906,8 +1910,8 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
         final isFav = favorites.isFav(song.number);
 
         return Wrap(
-          spacing: 3,
-          runSpacing: 2,
+          spacing: 2,
+          runSpacing: 1,
           alignment: WrapAlignment.center,
           children: [
             pill(
