@@ -1597,7 +1597,7 @@ class _SongDetailsState extends State<SongDetails> {
                       .colorScheme
                       .onSurface
                       // ignore: deprecated_member_use
-                      .withOpacity(0.30),
+                      .withOpacity(0.20),
                 ),
               ],
             ),
@@ -1904,7 +1904,7 @@ class _NavSquare extends StatelessWidget {
               BorderSide(color: Colors.black, width: 1),
             ),
           ),
-          child: Icon(icon, size: 18, color: fg),
+          child: Icon(icon, size: 22, color: fg),
         ),
       ),
     );
@@ -1941,7 +1941,7 @@ class _HeaderActionsScreenshotStyle extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           onTap: onTap,
           child: Ink(
-            height: 26,
+            height: 28,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               color: bg,

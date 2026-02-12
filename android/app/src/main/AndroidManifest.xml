@@ -41,5 +41,17 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+
+         <!-- ✅ Add these for Share sheet visibility -->
+    <intent>
+        <action android:name="android.intent.action.SEND"/>
+        <data android:mimeType="text/plain"/>
+    </intent>
+
+    <!-- Optional (only needed if you ever share multiple items/files) -->
+    <intent>
+        <action android:name="android.intent.action.SEND_MULTIPLE"/>
+        <data android:mimeType="*/*"/>
+    </intent>
     </queries>
 </manifest>
