@@ -1552,7 +1552,6 @@ class _SongDetailsState extends State<SongDetails> {
         elevation: 0,
         automaticallyImplyLeading: false,
         toolbarHeight: 0,
-
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(120),
           child: Container(
@@ -1597,6 +1596,7 @@ class _SongDetailsState extends State<SongDetails> {
                   color: Theme.of(context)
                       .colorScheme
                       .onSurface
+                      // ignore: deprecated_member_use
                       .withOpacity(0.30),
                 ),
               ],
@@ -1604,7 +1604,6 @@ class _SongDetailsState extends State<SongDetails> {
           ),
         ),
       ),
-
       body: Container(
         color: lyricsBg,
         child: GestureDetector(
@@ -1644,8 +1643,6 @@ class _SongDetailsState extends State<SongDetails> {
     );
   }
 }
-
-
 
 class _HeaderCardLikeScreenshot extends StatelessWidget {
   final Song song;
@@ -1913,8 +1910,6 @@ class _NavSquare extends StatelessWidget {
     );
   }
 }
-
-      
 
 // unchanged
 class _HeaderActionsScreenshotStyle extends StatelessWidget {
